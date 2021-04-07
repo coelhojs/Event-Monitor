@@ -2,13 +2,14 @@
 
 ### TODO:
 - API
-  - POST de novo evento
+  - POST de novo evento 
   - GET de lista de eventos
-  - Swagger?
-  - Conexão com o banco (Postgres?)
+  - Swagger OK
+  - Conexão com o banco (Postgres?) OK
 - Front-End
   - Angular
-- Container Postgres
+- Container Postgres OK
+- Logger
 - Pipeline CI Gitlab
 - Testes
   - Unitários
