@@ -4,11 +4,11 @@
     "EventMonitor": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "",
+      "launchUrl": "swagger",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CONNECTION_STRING": "Host=localhost;Port=5432;Database=authentication_hypervision;Username=postgres;Password=postgres;",
+        "CONNECTION_STRING": "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres;",
         "TZ": "America/Sao_Paulo"
       }
     }
