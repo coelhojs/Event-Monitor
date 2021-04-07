@@ -1,13 +1,15 @@
 ﻿{
   "$schema": "http://json.schemastore.org/launchsettings.json",
-  "profiles": {    
+  "profiles": {
     "EventMonitor": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "",
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CONNECTION_STRING": "Host=localhost;Port=5432;Database=authentication_hypervision;Username=postgres;Password=postgres;",
+        "TZ": "America/Sao_Paulo"
       }
     }
   }

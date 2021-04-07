@@ -1,3 +1,21 @@
+# EventMonitor
+
+### TODO:
+- API
+  - POST de novo evento
+  - GET de lista de eventos
+  - Swagger?
+  - Conexão com o banco (Postgres?)
+- Front-End
+  - Angular
+- Container Postgres
+- Pipeline CI Gitlab
+- Testes
+  - Unitários
+  - Integração
+  - Carga
+- Kafka?
+
 # Desafio para vaga de analista júnior
 
 ## Considerações Gerais

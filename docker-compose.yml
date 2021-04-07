@@ -1,0 +1,24 @@
+version: '3'
+services:
+  event-monitor:
+    image: event-monitor
+    env_file:
+    - .env
+    build:
+      context: .
+      dockerfile: "./Dockerfile"
+    restart: unless-stopped
+    container_name: event-monitor    
+    ports:
+      - 5000:80
+  postgres:
+    container_name: postgres
+    env_file:
+      - .env
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    #restart: always
+    volumes:
+      - "./event-monitor/data:/var/lib/postgresql/data"
+      - "./db.sql:/docker-entrypoint-initdb.d/init.sql"
