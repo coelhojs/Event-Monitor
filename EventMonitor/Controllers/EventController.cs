@@ -1,8 +1,8 @@
-﻿using EventMonitor.Model;
+﻿using EventMonitor.Business;
+using EventMonitor.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 
 namespace EventMonitor.Controllers
 {
@@ -10,14 +10,19 @@ namespace EventMonitor.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
+        public static EventVO _event = new EventVO();
+
+        //TODO: Usar Injeção de dependencia no Startup
+        private EventBusiness _eventBusiness = new EventBusiness();
+
         [HttpPost]
-        public ActionResult NewEvent([FromBody] Event data)
+        public ActionResult NewEvent([FromBody] EventVO data)
         {
             try
             {
+                _eventBusiness.ProcessEvent(data);
 
-
-                //TODO: Verificar e fazer um override ToString se necessário
+                //TODO: Override ToString
                 return Ok($"Evento {data} recebido");
             }
             catch (Exception ex)
