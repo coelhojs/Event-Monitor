@@ -18,7 +18,7 @@ services:
     image: postgres:9.6
     ports:
       - 5432:5432
-    #restart: always
+    restart: always
     volumes:
       - "./event-monitor/data:/var/lib/postgresql/data"
       - "./db.sql:/docker-entrypoint-initdb.d/init.sql"
