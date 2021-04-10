@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using EventMonitor.ViewObjects;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -7,6 +8,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 
 namespace IntegrationTests
 {
@@ -54,6 +56,13 @@ namespace IntegrationTests
 
             Client = _server.CreateClient();
             Client.BaseAddress = new Uri(AppUrl);
+        }
+
+        public StringContent SerializeObject(EventVO mockEvent)
+        {
+            var serializedObject = JsonConvert.SerializeObject(mockEvent);
+
+            return new StringContent(serializedObject, Encoding.UTF8, "application/json");
         }
 
         public void Dispose()

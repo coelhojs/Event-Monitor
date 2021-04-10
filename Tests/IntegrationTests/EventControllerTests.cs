@@ -1,7 +1,4 @@
-using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using Xunit;
 
 namespace IntegrationTests
@@ -16,18 +13,18 @@ namespace IntegrationTests
         }
 
         [Fact]
-        public void NewEvent()
+        public async void NewEvent()
         {
             //arrange
             var mockEvent = _MockObjects.MockEvent();
-            var data = JsonConvert.SerializeObject(mockEvent);
-            var content = new StringContent(data, Encoding.UTF8, "application/json");
+
+            var content = _.SerializeObject(mockEvent);
 
             //act
-            var result = _.Client.PostAsync($"{_.AppUrl}/Event", content).Result;
+            await _.Client.PostAsync($"{_.AppUrl}/Event", content);
 
             //assert
-            var persistedEvent = _.Client.GetAsync($"{_.AppUrl}/Event?tag='{mockEvent.Tag}'").Result;
+            var persistedEvent = _.Client.GetAsync($"{_.AppUrl}/Event?timestamp={mockEvent.Timestamp}&tag={mockEvent.Tag}&value={mockEvent.Value}").Result;
 
             Assert.Equal(HttpStatusCode.OK, persistedEvent.StatusCode);
         }
