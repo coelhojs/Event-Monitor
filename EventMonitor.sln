@@ -5,7 +5,10 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventMonitor", "EventMonitor\EventMonitor.csproj", "{05A06F89-0FFF-4807-B7B3-3345E6085A38}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "Tests\UnitTests\UnitTests.csproj", "{3BDD2B01-ED44-4B64-8E28-29A558E12E5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "Tests\IntegrationTests\IntegrationTests.csproj", "{3BDD2B01-ED44-4B64-8E28-29A558E12E5D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05A06F89-0FFF-4807-B7B3-3345E6085A38} = {05A06F89-0FFF-4807-B7B3-3345E6085A38}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

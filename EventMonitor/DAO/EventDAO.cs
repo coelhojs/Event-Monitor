@@ -1,5 +1,5 @@
 using EventMonitor.Entities;
-using EventMonitor.Model;
+using EventMonitor.ViewObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +8,18 @@ namespace EventMonitor.DAO
 {
     public class EventDAO
     {
+        public List<EventVO> Get(EventVO filter)
+        {
+            //TODO: Usar filtro
+
+            using (var context = new Context())
+            {
+                var events = context.Event.ToList();
+
+                return events.Select(ev => FromEntityToVO(ev)).ToList();
+            }
+        }
+
         public List<Event> GetByTag(string tag)
         {
             using (var context = new Context())

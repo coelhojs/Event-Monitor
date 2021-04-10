@@ -1,8 +1,9 @@
 ﻿using EventMonitor.Business;
-using EventMonitor.Model;
+using EventMonitor.ViewObjects;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 
 namespace EventMonitor.Controllers
 {
@@ -10,10 +11,12 @@ namespace EventMonitor.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        public static EventVO _event = new EventVO();
+        private readonly IEventBusiness _eventBusiness;
 
-        //TODO: Usar Injeção de dependencia no Startup
-        private EventBusiness _eventBusiness = new EventBusiness();
+        public EventController(IEventBusiness eventBusiness)
+        {
+            _eventBusiness = eventBusiness;
+        }
 
         [HttpPost]
         public ActionResult NewEvent([FromBody] EventVO data)
@@ -24,6 +27,22 @@ namespace EventMonitor.Controllers
 
                 //TODO: Override ToString
                 return Ok($"Evento {data} recebido");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+
+            }
+        }
+
+        [HttpGet]
+        public ActionResult<List<EventVO>> GetEvents([FromQuery] EventVO filter)
+        {
+            try
+            {
+                var events = _eventBusiness.GetEvents(filter);
+
+                return Ok(events);
             }
             catch (Exception ex)
             {

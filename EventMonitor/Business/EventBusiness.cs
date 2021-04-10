@@ -1,16 +1,22 @@
 ﻿using EventMonitor.DAO;
-using EventMonitor.Model;
+using EventMonitor.ViewObjects;
 using System;
+using System.Collections.Generic;
 
 namespace EventMonitor.Business
 {
-    public class EventBusiness
+    public class EventBusiness : IEventBusiness
     {
         private EventDAO _eventDAO;
 
         public EventBusiness(EventDAO eventDAO = null)
         {
             _eventDAO = eventDAO ?? new EventDAO();
+        }
+
+        public List<EventVO> GetEvents(EventVO filter)
+        {
+            return _eventDAO.Get(filter);
         }
 
         public void ProcessEvent(EventVO newEvent)
@@ -20,7 +26,7 @@ namespace EventMonitor.Business
             _eventDAO.Save(newEvent);
         }
 
-        private void ValidateEvent(EventVO newEvent)
+        public void ValidateEvent(EventVO newEvent)
         {
             if (string.IsNullOrWhiteSpace(newEvent.Tag) || newEvent.Tag.Contains(" ") || string.IsNullOrWhiteSpace(newEvent.Value))
             {
