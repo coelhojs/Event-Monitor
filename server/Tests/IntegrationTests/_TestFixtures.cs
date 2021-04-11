@@ -58,7 +58,7 @@ namespace IntegrationTests
             Client.BaseAddress = new Uri(AppUrl);
         }
 
-        public StringContent SerializeObject(EventVO mockEvent)
+        public StringContent SerializeObject(RawEventVO mockEvent)
         {
             var serializedObject = JsonConvert.SerializeObject(mockEvent);
 
