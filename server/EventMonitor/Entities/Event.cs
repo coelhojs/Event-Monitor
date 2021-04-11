@@ -8,12 +8,16 @@ namespace EventMonitor.Entities
     public class Event
     {
         [Required]
-        [Column(name: "TIMESTAMP")]
-        public DateTime Timestamp { get; set; }
+        [Column(name: "REGION")]
+        public string Region { get; set; }
 
         [Required]
-        [Column(name: "TAG")]
-        public string Tag { get; set; }
+        [Column(name: "SENSOR")]
+        public string Sensor { get; set; }
+
+        [Required]
+        [Column(name: "TIMESTAMP")]
+        public DateTime Timestamp { get; set; }
 
         [Required]
         [Column(name: "VALUE")]

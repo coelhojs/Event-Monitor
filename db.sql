@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS "EVENT" (
+    "REGION" varchar NOT NULL,
+    "SENSOR" varchar NOT NULL,
     "TIMESTAMP" timestamp(0) NOT NULL,
-    "TAG" varchar NOT NULL,
     "VALUE" varchar NOT NULL,
-    CONSTRAINT event_pk PRIMARY KEY ("TIMESTAMP", "TAG", "VALUE")
+    CONSTRAINT event_pk PRIMARY KEY ("REGION", "SENSOR", "TIMESTAMP", "VALUE")
 );

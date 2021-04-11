@@ -1,10 +1,9 @@
 ﻿namespace EventMonitor.ViewObjects
 {
-    public class EventVO
+    public class EventStatsVO
     {
-        public long Timestamp { get; set; }
+        public long Counter { get; set; }
         public string Region { get; set; }
         public string Sensor { get; set; }
-        public string Value { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace EventMonitor
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Event>()
-                .HasKey(u => new { u.Timestamp, u.Tag, u.Value });
+                .HasKey(u => new { u.Timestamp, u.Region, u.Sensor, u.Value });
         }
     }
 }

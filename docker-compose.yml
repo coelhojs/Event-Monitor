@@ -7,10 +7,12 @@ services:
     build:
       context: .
       dockerfile: "./Dockerfile"
-    restart: unless-stopped
     container_name: event-monitor    
     ports:
       - 5000:80
+    restart: unless-stopped
+    volumes:  
+      - "./data:/app/data"
   db:
     container_name: postgres
     env_file:
