@@ -1,10 +1,13 @@
 ﻿using EventMonitor.Business;
+using EventMonitor.Hubs;
+using EventMonitor.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
 namespace EventMonitor
 {
@@ -22,6 +25,8 @@ namespace EventMonitor
         {
             services.AddSingleton<IEventBusiness, EventBusiness>();
 
+            services.AddCors();
+
             services.AddSwaggerGen(c =>
                         {
                             c.SwaggerDoc("v1", new OpenApiInfo
@@ -32,6 +37,8 @@ namespace EventMonitor
                         });
 
             services.AddControllers();
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,11 +58,25 @@ namespace EventMonitor
 
             app.UseRouting();
 
+            app.UseCors(builder =>
+            {
+                builder.SetIsOriginAllowed(s => true);
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+                builder.AllowCredentials();
+            });
+
             app.UseAuthorization();
+
+            app.UseWebSockets(new WebSocketOptions
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(120),
+            });
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<EventHub>("/hub/events");
             });
 
             app.ApplicationServices.GetService<EventBusiness>();

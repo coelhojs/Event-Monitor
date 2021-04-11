@@ -37,7 +37,7 @@ export class DashboardComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   connection: signalR.HubConnection;
-  events: any;
+  eventsStats: EventStats[];
 
   constructor(private breakpointObserver: BreakpointObserver) {
     // Create 100 users
@@ -59,15 +59,16 @@ export class DashboardComponent implements AfterViewInit {
 
   initWebSocket() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('/hub/events')
+      .withUrl('http://localhost:5000/hub/events')
       .build();
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
-      this.events = events;
+      this.eventsStats = events;
     });
 
     this.connection.on('startMonitor', (events: EventStats[]) => {
-      this.events = events;
+      this.eventsStats = events;
+      console.log(events);
     });
 
     this.connection.on('stopMonitor', () => {

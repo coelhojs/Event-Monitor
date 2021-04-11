@@ -8,13 +8,21 @@ namespace EventMonitor.DAO
 {
     public class EventDAO
     {
-        public List<EventVO> Get(EventVO filter)
+        public List<EventVO> Get(RawEventVO filter)
         {
-            //TODO: Usar filtro
+            List<Event> events = null;
 
             using (var context = new Context())
             {
-                var events = context.Event.ToList();
+                if (filter != null)
+                {
+                    //TODO: Usar filtro
+                    events = context.Event.ToList();
+                }
+                else
+                {
+                    events = context.Event.ToList();
+                }
 
                 return events.Select(ev => FromEntityToVO(ev)).ToList();
             }
@@ -24,7 +32,7 @@ namespace EventMonitor.DAO
         {
             using (var context = new Context())
             {
-                var events = context.Event.Where(m => m.Tag == tag).ToList();
+                var events = context.Event.Where(m => m.Region == tag).ToList();
 
                 return events;
             }
@@ -55,21 +63,23 @@ namespace EventMonitor.DAO
             }
         }
 
-        public virtual EventVO FromEntityToVO(Event entity)
+        public EventVO FromEntityToVO(Event entity)
         {
             return new EventVO
             {
-                Tag = entity.Tag,
+                Region = entity.Region,
+                Sensor = entity.Sensor,
                 Timestamp = new DateTimeOffset(entity.Timestamp).ToUnixTimeSeconds(),
                 Value = entity.Value
             };
         }
 
-        public virtual Event FromVOToEntity(EventVO vo, Event entity = null)
+        public Event FromVOToEntity(EventVO vo, Event entity = null)
         {
             return new Event
             {
-                Tag = vo.Tag,
+                Region = vo.Region,
+                Sensor = vo.Sensor,
                 Timestamp = new DateTime(1970, 1, 1).AddMilliseconds(vo.Timestamp),
                 Value = vo.Value
             };
