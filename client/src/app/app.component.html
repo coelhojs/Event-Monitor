@@ -1,13 +1,20 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="app-toolbar">
   <span>Event Monitor</span>
   <span class="spacer"></span>
-  <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
-  </button>
-  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
-    <mat-icon>share</mat-icon>
+  <button mat-icon-button class="example-icon github-icon" aria-label="Example icon-button with heart icon">
+    <mat-icon>github</mat-icon>
   </button>
 </mat-toolbar>
 
-<dashboard></dashboard>
+<div class="grid-container">
+  <mat-grid-list cols="2" rowHeight="600px">
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <dashboard class="grid-item" [dataSource]="dataSource" [eventsStats]="eventsStats"></dashboard>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <chart class="grid-item" [chartData]="chartData"></chart>
+    </mat-grid-tile>
+  </mat-grid-list>
+</div>
+
 <router-outlet></router-outlet>

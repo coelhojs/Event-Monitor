@@ -52,8 +52,11 @@ namespace EventMonitor.Services
             while (AggregatorCTS.IsCancellationRequested == false)
             {
                 var stats = _eventBusiness.GetEventsStats();
+                var chartData = _eventBusiness.GetChartData(stats);
 
                 await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
+
+                await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
 
                 await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UpdateIntervalMs")));
             }

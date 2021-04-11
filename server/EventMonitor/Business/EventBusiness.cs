@@ -84,5 +84,39 @@ namespace EventMonitor.Business
                 Value = newEvent.Value
             };
         }
+
+        public List<ChartDataVO> GetChartData(List<EventStatsVO> stats)
+        {
+            var regions = new string[] { "brasil.nordeste", "brasil.norte", "brasil.sudeste", "brasil.sul" };
+            var chartData = new List<ChartDataVO>();
+
+            var orderedStats = stats
+                .Where(item => item.Sensor != null)
+                .OrderBy(item => item.Sensor)
+                .ToList();
+
+            var sensors = orderedStats.Select(item => item.Sensor).ToHashSet<string>();
+
+            foreach (var item in sensors)
+            {
+                var north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Counter;
+                var northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Counter;
+                var southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Counter;
+                var south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Counter;
+
+                chartData.Add(new ChartDataVO
+                {
+                    Name = item,
+                    Data = new long[]{
+                        north ?? 0,
+                        northeast ?? 0,
+                        southeast ?? 0,
+                        south ?? 0
+                    }
+                });
+            }
+
+            return chartData;
+        }
     }
 }
