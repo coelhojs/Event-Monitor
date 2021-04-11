@@ -55,6 +55,8 @@ namespace EventMonitor.Business
         //
         public EventVO ParseEvent(RawEventVO newEvent)
         {
+            //TODO: Validar se a tag tem 3 (brasil.sudeste.sensor01), se não tiver rejeitar evento
+
             if (string.IsNullOrWhiteSpace(newEvent.Tag) || newEvent.Tag.Contains(" "))
             {
                 throw new Exception("O evento recebido possui um ou mais valores inválidos.");

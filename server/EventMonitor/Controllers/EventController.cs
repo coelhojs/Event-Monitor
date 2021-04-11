@@ -2,7 +2,6 @@
 using EventMonitor.Interfaces;
 using EventMonitor.Services;
 using EventMonitor.ViewObjects;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -10,13 +9,15 @@ using System.Threading.Tasks;
 
 namespace EventMonitor.Controllers
 {
+    [Produces("application/json")]
     [Route("[controller]")]
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly EventsAggregator _eventsAggregator;
         private readonly IEventBusiness _eventBusiness;
         private readonly IHubContext<EventHub> _eventHub;
+
+        private readonly EventsAggregator _eventsAggregator;
 
         public EventController(IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
         {
@@ -37,7 +38,7 @@ namespace EventMonitor.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex);
+                return Problem(ex.ToString());
 
             }
         }
@@ -53,8 +54,7 @@ namespace EventMonitor.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex);
-
+                return Problem(ex.ToString());
             }
         }
 
