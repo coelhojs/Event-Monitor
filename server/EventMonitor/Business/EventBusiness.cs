@@ -4,14 +4,14 @@ using EventMonitor.ViewObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventMonitor.Business
 {
     public class EventBusiness : IEventBusiness
     {
-        private Dictionary<string, string> _status;
-
         private EventDAO _eventDAO;
+        private Dictionary<string, string> _status;
 
         public EventBusiness(EventDAO eventDAO = null)
         {
@@ -61,19 +61,27 @@ namespace EventMonitor.Business
                 .ToList();
         }
 
-        public void ProcessEvent(RawEventVO newEvent)
+        public async Task ProcessEvent(RawEventVO newEvent)
         {
-            var parsedEvent = ParseEvent(newEvent);
-
-            _eventDAO.Save(parsedEvent);
-
-            if (string.IsNullOrEmpty(newEvent.Value))
+            try
             {
-                _status.Add(newEvent.Tag, "erro");
+                var parsedEvent = ParseEvent(newEvent);
+
+                _eventDAO.Save(parsedEvent);
+
+                if (string.IsNullOrEmpty(newEvent.Value))
+                {
+                    _status.Add(newEvent.Tag, "erro");
+                }
+                else
+                {
+
+                    _status.Add(newEvent.Tag, "processado");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _status.Add(newEvent.Tag, "processado");
+                Console.WriteLine(ex);
             }
         }
 
@@ -81,12 +89,17 @@ namespace EventMonitor.Business
         {
             //TODO: Validar se a tag tem 3 (brasil.sudeste.sensor01), se não tiver rejeitar evento
 
-            if (string.IsNullOrWhiteSpace(newEvent.Tag) || newEvent.Tag.Contains(" "))
+            if (string.IsNullOrWhiteSpace(newEvent.Tag))
             {
                 throw new Exception("O evento recebido possui um ou mais valores inválidos.");
             }
 
             var tagParts = newEvent.Tag.Split('.');
+
+            if (tagParts.Length < 3)
+            {
+                throw new Exception($"Tag inválida: {newEvent.Tag}");
+            }
 
             return new EventVO
             {

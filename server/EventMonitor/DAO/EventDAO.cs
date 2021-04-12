@@ -3,6 +3,7 @@ using EventMonitor.ViewObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace EventMonitor.DAO
 {
@@ -38,7 +39,7 @@ namespace EventMonitor.DAO
             }
         }
 
-        public void Save(EventVO data)
+        public async Task Save(EventVO data)
         {
             try
             {
@@ -48,7 +49,7 @@ namespace EventMonitor.DAO
 
                     context.Event.Add(entity);
 
-                    context.SaveChanges();
+                    await context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)

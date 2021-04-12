@@ -1,5 +1,6 @@
 ﻿using EventMonitor.ViewObjects;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EventMonitor.Interfaces
 {
@@ -8,7 +9,7 @@ namespace EventMonitor.Interfaces
         List<EventVO> GetEvents(RawEventVO filter);
         List<EventStatsVO> GetEventsStats();
         EventVO ParseEvent(RawEventVO newEvent);
-        void ProcessEvent(RawEventVO newEvent);
+        Task ProcessEvent(RawEventVO newEvent);
         List<ChartDataVO> GetChartData(List<EventStatsVO> stats);
     }
 }

@@ -1,0 +1,39 @@
+﻿using EventMonitor.Interfaces;
+using EventMonitor.ViewObjects;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
+
+namespace EventMonitor.Services
+{
+    public class EventsProcessor
+    {
+        private IEventBusiness _eventBusiness;
+        private ConcurrentQueue<RawEventVO> _concurrentQueue;
+
+        public EventsProcessor(IEventBusiness eventBusiness)
+        {
+            _concurrentQueue = new ConcurrentQueue<RawEventVO>();
+            _eventBusiness = eventBusiness;
+
+            Task.Run(Process);
+        }
+
+        public void Enqueue(RawEventVO newEvent)
+        {
+            _concurrentQueue.Enqueue(newEvent);
+        }
+
+        public async Task Process()
+        {
+            RawEventVO rawEvent;
+
+            while (true)
+            {
+                if (_concurrentQueue.TryDequeue(out rawEvent))
+                {
+                    await _eventBusiness.ProcessEvent(rawEvent);
+                }
+            }
+        }
+    }
+}

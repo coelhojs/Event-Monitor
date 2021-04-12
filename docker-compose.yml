@@ -24,3 +24,12 @@ services:
     volumes:
       - "./data:/var/lib/postgresql/data"
       - "./db.sql:/docker-entrypoint-initdb.d/init.sql"
+  simulator:
+    image: event-simulator
+    env_file:
+    - .env
+    build:
+      context: .
+      dockerfile: "./simulator/Dockerfile"
+    container_name: event-simulator
+    restart: unless-stopped

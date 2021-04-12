@@ -36,7 +36,7 @@ namespace Event_Simulator
 
                 _logger.LogInformation("Simulando eventos para todos os sensores: {time}", DateTimeOffset.Now);
 
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("SIMULATOR_INTERVAL")), stoppingToken);
             }
         }
     }

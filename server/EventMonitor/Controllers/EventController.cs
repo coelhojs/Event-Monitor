@@ -18,23 +18,23 @@ namespace EventMonitor.Controllers
         private readonly IHubContext<EventHub> _eventHub;
 
         private readonly EventsAggregator _eventsAggregator;
+        private readonly EventsProcessor _eventsProcessor;
 
         public EventController(IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
         {
             _eventBusiness = eventBusiness;
             _eventHub = eventHub;
             _eventsAggregator = new EventsAggregator(_eventBusiness, _eventHub);
+            _eventsProcessor = new EventsProcessor(_eventBusiness);
         }
 
         [HttpPost]
-        public ActionResult NewEvent([FromBody] RawEventVO data)
+        public IActionResult NewEvent([FromBody] RawEventVO data)
         {
             try
             {
-                _eventBusiness.ProcessEvent(data);
-
-                //TODO: Override ToString
-                return Ok($"Evento {data} recebido");
+                Task.Run(() => _eventsProcessor.Enqueue(data));
+                return Accepted();
             }
             catch (Exception ex)
             {
@@ -43,23 +43,23 @@ namespace EventMonitor.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult GetEvents([FromQuery] RawEventVO filter)
-        {
-            try
-            {
-                var events = _eventBusiness.GetEvents(filter);
+        //[HttpGet]
+        //public IActionResult GetEvents([FromQuery] RawEventVO filter)
+        //{
+        //    try
+        //    {
+        //        var events = _eventBusiness.GetEvents(filter);
 
-                return Ok(events);
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.ToString());
-            }
-        }
+        //        return Ok(events);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Problem(ex.ToString());
+        //    }
+        //}
 
         [HttpGet("GetStats")]
-        public ActionResult GetStats()
+        public IActionResult GetStats()
         {
             try
             {
@@ -74,7 +74,7 @@ namespace EventMonitor.Controllers
         }
 
         [HttpGet("StartAggregator")]
-        public ActionResult StartAggregator()
+        public IActionResult StartAggregator()
         {
             try
             {
@@ -102,7 +102,7 @@ namespace EventMonitor.Controllers
         }
 
         [HttpGet("StopAggregator")]
-        public ActionResult StopAggregator()
+        public IActionResult StopAggregator()
         {
             try
             {

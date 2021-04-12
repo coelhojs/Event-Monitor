@@ -5,7 +5,7 @@ namespace Event_Simulator
 {
     public class Simulator
     {
-        public string AppUrl { get; } = "http://localhost:5000";
+        public string AppUrl { get; } = Environment.GetEnvironmentVariable("API_URL");
         public HttpClient Client { get; }
 
         public Simulator()
