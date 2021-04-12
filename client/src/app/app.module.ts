@@ -17,7 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardComponent } from './table/table.component';
 
 @NgModule({
   declarations: [

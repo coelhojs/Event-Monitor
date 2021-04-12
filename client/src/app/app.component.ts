@@ -35,6 +35,7 @@ export class AppComponent {
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
       this.eventsStats = events;
+      console.log(events);
       this.dataSource = new MatTableDataSource(this.eventsStats);
     });
 
