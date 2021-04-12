@@ -9,11 +9,14 @@ namespace EventMonitor.Business
 {
     public class EventBusiness : IEventBusiness
     {
+        private Dictionary<string, string> _status;
+
         private EventDAO _eventDAO;
 
         public EventBusiness(EventDAO eventDAO = null)
         {
             _eventDAO = eventDAO ?? new EventDAO();
+            _status = new Dictionary<string, string>();
         }
 
         public List<EventVO> GetEvents(RawEventVO filter = null)
@@ -37,7 +40,8 @@ namespace EventMonitor.Business
                         {
                             Counter = group.Count(),
                             Sensor = group.Key.Sensor,
-                            Region = group.Key.Region
+                            Region = group.Key.Region,
+                            Status = _status.GetValueOrDefault($"{group.Key.Region}.{group.Key.Sensor}")
                         })
                         .OrderBy(x => x.Region)
                         .ToList();
@@ -62,9 +66,17 @@ namespace EventMonitor.Business
             var parsedEvent = ParseEvent(newEvent);
 
             _eventDAO.Save(parsedEvent);
+
+            if (string.IsNullOrEmpty(newEvent.Value))
+            {
+                _status.Add(newEvent.Tag, "erro");
+            }
+            else
+            {
+                _status.Add(newEvent.Tag, "processado");
+            }
         }
 
-        //
         public EventVO ParseEvent(RawEventVO newEvent)
         {
             //TODO: Validar se a tag tem 3 (brasil.sudeste.sensor01), se não tiver rejeitar evento
