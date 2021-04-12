@@ -58,6 +58,21 @@ namespace EventMonitor.Controllers
             }
         }
 
+        [HttpGet("GetStats")]
+        public ActionResult GetStats()
+        {
+            try
+            {
+                var events = _eventBusiness.GetEventsStats();
+
+                return Ok(events);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.ToString());
+            }
+        }
+
         [HttpGet("StartAggregator")]
         public ActionResult StartAggregator()
         {

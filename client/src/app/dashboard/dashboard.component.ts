@@ -1,8 +1,8 @@
+import { animate, state, style, transition, trigger } from '@angular/animations';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { HttpClient } from '@angular/common/http';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { map } from 'rxjs/operators';
@@ -11,14 +11,23 @@ import { EventStats } from 'src/models/EventStats';
 @Component({
   selector: 'dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class DashboardComponent implements AfterViewInit {
-  displayedColumns: string[] = ['region', 'sensor', 'counter'];
+
+  columns = ['region', 'sensor', 'counter'];
+  labels = ['Região', 'Sensor', 'Quantidade'];
   dataSource: MatTableDataSource<EventStats>;
+  expandedElement: EventStats[] | null;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  @ViewChild(MatSort) sort: MatSort;
 
   connection: signalR.HubConnection;
   eventsStats: EventStats[];
@@ -29,13 +38,15 @@ export class DashboardComponent implements AfterViewInit {
 
   ngOnInit(): void {
     this.initWebSocket();
-    this.connection.start();
+    this.connection.start()
+      .then(() => {
+        this.connection.invoke('Update');  
+      })
     this.startAggregator();
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
   }
 
   initWebSocket() {
@@ -45,13 +56,11 @@ export class DashboardComponent implements AfterViewInit {
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
       this.eventsStats = events;
-      //console.log(events);
       this.dataSource = new MatTableDataSource(this.eventsStats);
-      //console.log(this.dataSource);
     });
 
     this.connection.on('startMonitor', (events: EventStats[]) => {
-      this.eventsStats = events;
+      //
     });
 
     this.connection.on('stopMonitor', () => {
@@ -59,12 +68,26 @@ export class DashboardComponent implements AfterViewInit {
     });
   }
 
+  getStats(): any {
+    this.http.get('http://localhost:5000/Event/GetStats')
+      .subscribe(res => {
+        return res;
+      }, err => {
+        if (err.status != 409) {
+          console.error(err);
+          return null;
+        }
+      });
+  }
+
   startAggregator(): any {
     this.http.get('http://localhost:5000/Event/StartAggregator')
       .subscribe(res => {
         console.log(res)
       }, err => {
-        console.error(err);
+        if (err.status != 409) {
+          console.error(err);
+        }
       });
   }
 
@@ -90,6 +113,16 @@ export class DashboardComponent implements AfterViewInit {
   );
 }
 
-function observableThrowError(arg0: any) {
-  throw new Error('Function not implemented.');
-}
+// function parseEventsStats(events: EventStats[]): EventStats[] {
+//   let summarizedStats = events.filter(item => {
+//     return item.sensor == null;
+//   })
+
+//   summarizedStats.forEach(item => {
+//     item.details = events.filter(event => {
+//       return event.region == item.region && event.sensor != null;
+//     });
+//   });
+
+//   return summarizedStats;
+// }

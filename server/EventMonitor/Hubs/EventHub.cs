@@ -1,6 +1,5 @@
 ﻿using EventMonitor.Interfaces;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,14 +26,9 @@ namespace EventMonitor.Hubs
 
         public async void Update()
         {
-            while (AggregatorCTS.IsCancellationRequested == false)
-            {
-                var stats = _eventBusiness.GetEventsStats();
+            var stats = _eventBusiness.GetEventsStats();
 
-                await Clients.All.SendAsync(WebSocketActions.UPDATE, stats);
-
-                await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UpdateIntervalMs")));
-            }
+            await Clients.All.SendAsync(WebSocketActions.UPDATE, stats);
         }
 
         public async Task Stop()

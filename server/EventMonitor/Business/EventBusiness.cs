@@ -42,7 +42,19 @@ namespace EventMonitor.Business
                         .OrderBy(x => x.Region)
                         .ToList();
 
-            return stats;
+            var summarizedStats = stats.GroupBy(stat => stat.Region)
+                .Select(group => new EventStatsVO
+                {
+                    Counter = group.Sum(item => item.Counter),
+                    Region = group.Key
+                });
+
+            stats.AddRange(summarizedStats);
+
+            return stats
+                .OrderBy(item => item.Sensor)
+                .OrderBy(item => item.Region)
+                .ToList();
         }
 
         public void ProcessEvent(RawEventVO newEvent)

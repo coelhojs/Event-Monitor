@@ -10,6 +10,10 @@
   bottom: 15px;
 }
 
+th.mat-header-cell {
+  text-align: center;
+}
+
 .more-button {
   position: absolute;
   top: 5px;
@@ -24,11 +28,20 @@ table {
   width: 100%;
 }
 
-.mat-form-field {
-  font-size: 14px;
-  width: 100%;
+// td.mat-cell {
+//   border-bottom-color: transparent;
+// }
+
+.mat-row {
+  height: 36px;
+  .mat-cell {
+    color: #909090;
+  }
 }
 
-td, th {
-  width: 25%;
+.boldline {
+  background: whitesmoke;
+  .mat-cell {
+    color: black;
+  }
 }
