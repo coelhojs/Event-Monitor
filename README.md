@@ -2,12 +2,15 @@
 
 ### TODO:
 - API
-  - POST de novo evento 
-  - GET de lista de eventos
+  - POST de novo evento OK
+  - GET de lista de eventos OK
   - Swagger OK
   - Conexão com o banco (Postgres?) OK
+- Simulador
+- Gráfico da evolução das tags?
+- Histograma OK
 - Front-End
-  - Angular
+  - Angular OK
 - Container Postgres OK
 - Logger
 - Pipeline CI Gitlab
