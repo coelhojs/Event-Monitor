@@ -13,8 +13,8 @@ namespace IntegrationTests
     {
         private readonly ILogger<EventBusiness> _logger;
 
-        private _TestFixtures _;
-        private IEventBusiness _eventBusiness;
+        private readonly _TestFixtures _;
+        private readonly IEventBusiness _eventBusiness;
 
         public EventBusinessTests(_TestFixtures testFixtures)
         {

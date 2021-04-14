@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace EventMonitor.Services
 {
-    public class EventsProcessor
+    public class EventsProcessor : IEventsProcessor
     {
-        private IEventBusiness _eventBusiness;
-        private ConcurrentQueue<RawEventVO> _concurrentQueue;
+        private readonly IEventBusiness _eventBusiness;
+        private readonly ConcurrentQueue<RawEventVO> _concurrentQueue;
 
         public EventsProcessor(IEventBusiness eventBusiness)
         {

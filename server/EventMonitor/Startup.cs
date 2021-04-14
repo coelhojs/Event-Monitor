@@ -1,6 +1,7 @@
 ﻿using EventMonitor.Business;
 using EventMonitor.Hubs;
 using EventMonitor.Interfaces;
+using EventMonitor.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -24,6 +25,8 @@ namespace EventMonitor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IEventBusiness, EventBusiness>();
+            services.AddSingleton<IEventsAggregator, EventsAggregator>();
+            services.AddSingleton<IEventsProcessor, EventsProcessor>();
 
             services.AddCors();
 
@@ -81,6 +84,8 @@ namespace EventMonitor
             });
 
             app.ApplicationServices.GetService<EventBusiness>();
+            app.ApplicationServices.GetService<EventsAggregator>();
+            app.ApplicationServices.GetService<EventsProcessor>();
         }
     }
 }

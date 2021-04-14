@@ -5,7 +5,7 @@ namespace IntegrationTests
 {
     public class EventControllerTests : IClassFixture<_TestFixtures>
     {
-        private _TestFixtures _;
+        private readonly _TestFixtures _;
 
         public EventControllerTests(_TestFixtures testFixtures)
         {

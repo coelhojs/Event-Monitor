@@ -7,7 +7,7 @@ namespace EventMonitor.Hubs
 {
     public class EventHub : Hub
     {
-        private IEventBusiness _eventBusiness;
+        private readonly IEventBusiness _eventBusiness;
 
         public CancellationTokenSource AggregatorCTS { get; set; }
         public Task AggregatorTask { get; set; }

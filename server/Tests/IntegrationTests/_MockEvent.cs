@@ -5,9 +5,9 @@ namespace IntegrationTests
 {
     public class _MockObjects
     {
-        private static string[] regions = new string[] { "norte", "nordeste", "sudeste", "sul" };
-        private static string[] sensors = new string[] { "sensor01", "sensor02", "sensor03", "sensor04" };
-        private static string[] values = new string[] { "0.13", "0.357", "0.542", "0.211", "" };
+        private static readonly string[] regions = new string[] { "norte", "nordeste", "sudeste", "sul" };
+        private static readonly string[] sensors = new string[] { "sensor01", "sensor02", "sensor03", "sensor04" };
+        private static readonly string[] values = new string[] { "0.13", "0.357", "0.542", "0.211", "" };
 
         public static RawEventVO MockEvent()
         {

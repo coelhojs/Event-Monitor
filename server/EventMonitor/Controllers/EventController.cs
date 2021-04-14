@@ -1,9 +1,7 @@
-﻿using EventMonitor.Hubs;
-using EventMonitor.Interfaces;
+﻿using EventMonitor.Interfaces;
 using EventMonitor.Services;
 using EventMonitor.ViewObjects;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
@@ -15,21 +13,19 @@ namespace EventMonitor.Controllers
     [ApiController]
     public class EventController : ControllerBase
     {
-        private readonly IEventBusiness _eventBusiness;
-        private readonly IHubContext<EventHub> _eventHub;
         private readonly ILogger<EventController> _logger;
 
-        private readonly EventsAggregator _eventsAggregator;
-        private readonly EventsProcessor _eventsProcessor;
+        private readonly IEventsAggregator _eventsAggregator;
+        private readonly IEventBusiness _eventBusiness;
+        private readonly IEventsProcessor _eventsProcessor;
 
-        public EventController(ILogger<EventController> logger, IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
+        public EventController(ILogger<EventController> logger, IEventBusiness eventBusiness, IEventsAggregator eventsAggregator, IEventsProcessor eventsProcessor)
         {
+            _eventsAggregator = eventsAggregator;
             _eventBusiness = eventBusiness;
-            _eventHub = eventHub;
+            _eventsProcessor = eventsProcessor;
             _logger = logger;
 
-            _eventsAggregator = new EventsAggregator(_eventBusiness, _eventHub);
-            _eventsProcessor = new EventsProcessor(_eventBusiness);
         }
 
         [HttpPost]

@@ -1,6 +1,7 @@
 ﻿using EventMonitor.Hubs;
 using EventMonitor.Interfaces;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,13 +13,15 @@ namespace EventMonitor.Services
         public CancellationTokenSource AggregatorCTS { get; set; }
         public Task AggregatorTask { get; set; }
 
-        private IEventBusiness _eventBusiness;
-        private IHubContext<EventHub> _eventHub;
+        private readonly IEventBusiness _eventBusiness;
+        private readonly IHubContext<EventHub> _eventHub;
+        private readonly ILogger<EventsAggregator> _logger;
 
-        public EventsAggregator(IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
+        public EventsAggregator(ILogger<EventsAggregator> logger, IHubContext<EventHub> eventHub, IEventBusiness eventBusiness)
         {
             _eventBusiness = eventBusiness;
             _eventHub = eventHub;
+            _logger = logger;
 
             StartAggregator();
         }
