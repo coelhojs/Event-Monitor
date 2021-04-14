@@ -28,9 +28,12 @@ namespace EventMonitor.Services
 
         public void StartAggregator()
         {
+            _logger.LogInformation("Iniciando agregador automático de estatísticas de eventos");
+
             AggregatorCTS = new CancellationTokenSource();
 
             AggregatorTask = new Task(() => AggregateStats(), AggregatorCTS.Token);
+
             AggregatorTask.Start();
         }
 
@@ -38,9 +41,12 @@ namespace EventMonitor.Services
         {
             try
             {
+                _logger.LogInformation("Interrompendo agregador automático.");
+
                 AggregatorCTS.Cancel();
 
                 await AggregatorTask;
+
             }
             finally
             {
@@ -52,16 +58,28 @@ namespace EventMonitor.Services
 
         public async void AggregateStats()
         {
-            while (AggregatorCTS.IsCancellationRequested == false)
+            try
             {
-                var stats = _eventBusiness.GetEventsStats();
-                var chartData = _eventBusiness.GetChartData(stats);
+                while (AggregatorCTS.IsCancellationRequested == false)
+                {
+                    _logger.LogDebug("Enviando dados atualizados para a tabela e o gráfico de eventos.");
 
-                await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
+                    var stats = _eventBusiness.GetEventsStats();
+                    var chartData = _eventBusiness.GetChartData(stats);
 
-                await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
+                    await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
+                    await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
 
-                await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UpdateIntervalMs")));
+                    await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UpdateIntervalMs")));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Ocorreu um erro no agregador de estatísticas. Será feita uma tentativa de reinicialização daqui 10 segundos.", ex);
+
+                await Task.Delay(10000);
+
+                StartAggregator();
             }
         }
     }

@@ -24,58 +24,50 @@ namespace EventMonitor.Business
 
         public List<EventStatsVO> GetEventsStats()
         {
-            try
-            {
-                var stats = _eventDAO.GetStats();
+            _logger.LogDebug("Obtendo dados agregados dos eventos.");
 
-                var summarizedStats = stats.GroupBy(stat => stat.Region)
-                    .Select(group => new EventStatsVO
-                    {
-                        Counter = group.Sum(item => item.Counter),
-                        Region = group.Key
-                    });
+            var stats = _eventDAO.GetStats();
 
-                stats.AddRange(summarizedStats);
+            _logger.LogDebug("Obtendo dados agregados das regiões.");
 
-                return stats
-                    .OrderBy(item => item.Region)
-                    .ThenBy(item => item.Sensor)
-                    .ToList();
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            var summarizedStats = stats.GroupBy(stat => stat.Region)
+                .Select(group => new EventStatsVO
+                {
+                    Counter = group.Sum(item => item.Counter),
+                    Region = group.Key
+                });
+
+            stats.AddRange(summarizedStats);
+
+            _logger.LogDebug("Ordenando dados por região e então por sensor.");
+
+            return stats
+                .OrderBy(item => item.Region)
+                .ThenBy(item => item.Sensor)
+                .ToList();
         }
 
         public async Task ProcessEvent(RawEventVO newEvent)
         {
-            try
-            {
-                _logger.LogInformation($"Processando novo evento: {newEvent.Tag}");
+            _logger.LogDebug($"Processando novo evento: {newEvent.Tag}");
 
-                var parsedEvent = ParseEvent(newEvent);
+            var parsedEvent = ParseEvent(newEvent);
 
-                await _eventDAO.Save(parsedEvent);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Houve um erro no processamento de um novo evento: {ex.Message}", newEvent);
-            }
+            await _eventDAO.Save(parsedEvent);
         }
 
         public EventVO ParseEvent(RawEventVO newEvent)
         {
             if (string.IsNullOrWhiteSpace(newEvent.Tag))
             {
-                throw new Exception("O evento recebido possui um ou mais valores inválidos.");
+                throw new FormatException("O evento recebido possui um ou mais valores inválidos.");
             }
 
             var tagParts = newEvent.Tag.Split('.');
 
             if (tagParts.Length < 3)
             {
-                throw new Exception($"Tag inválida: {newEvent.Tag}");
+                throw new FormatException($"Formato inválido de tag: {newEvent.Tag}");
             }
 
             return new EventVO

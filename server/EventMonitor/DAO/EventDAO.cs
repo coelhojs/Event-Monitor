@@ -25,14 +25,14 @@ namespace EventMonitor.DAO
 
                 foreach (var stat in stats)
                 {
-                    stat.Status = GetLatestEvent(context, stat.Region, stat.Sensor);
+                    stat.Status = GetLatestEventStatus(context, stat.Region, stat.Sensor);
                 }
 
                 return stats;
             }
         }
 
-        private string GetLatestEvent(Context context, string region, string sensor)
+        private string GetLatestEventStatus(Context context, string region, string sensor)
         {
             var value = context.Set<Event>().OrderByDescending(ev => ev.Id)
                        .FirstOrDefault(ev => ev.Region.Equals(region) && ev.Sensor.Equals(sensor)).Value;
@@ -43,26 +43,13 @@ namespace EventMonitor.DAO
 
         public async Task Save(EventVO data)
         {
-            try
+            using (var context = new Context())
             {
-                using (var context = new Context())
-                {
-                    var entity = FromVOToEvent(data);
+                var entity = FromVOToEvent(data);
 
-                    await context.Event.AddAsync(entity);
+                await context.Event.AddAsync(entity);
 
-                    await context.SaveChangesAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                //TODO: Tratar inclusão de dados duplicados
-                if (ex.InnerException.Message.ToLower().Contains("duplicate key") || ex.InnerException.Message.ToLower().Contains("already exists"))
-                {
-                    return;
-                }
-
-                throw ex;
+                await context.SaveChangesAsync();
             }
         }
 

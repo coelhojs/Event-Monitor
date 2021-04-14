@@ -19,6 +19,8 @@ namespace EventMonitor.Controllers
         private readonly IEventBusiness _eventBusiness;
         private readonly IEventsProcessor _eventsProcessor;
 
+        private readonly string baseErrorMsg = "Contate o administrador do sistema.";
+
         public EventController(ILogger<EventController> logger, IEventBusiness eventBusiness, IEventsAggregator eventsAggregator, IEventsProcessor eventsProcessor)
         {
             _eventsAggregator = eventsAggregator;
@@ -37,13 +39,21 @@ namespace EventMonitor.Controllers
 
                 Task.Run(() => _eventsProcessor.Enqueue(data));
 
-                _logger.LogDebug($"Tempo gasto: {(DateTime.Now - start).TotalSeconds.ToString()}");
+                _logger.LogDebug($"Tempo gasto: {(DateTime.Now - start).TotalSeconds}");
 
                 return Accepted();
             }
+            catch (FormatException ex)
+            {
+                var message = $"O evento possui dados inválidos: {ex.Message}";
+
+                _logger.LogError(message, ex);
+
+                return Problem(message);
+            }
             catch (Exception ex)
             {
-                return Problem($"Erro ao processar um novo evento:{ex.ToString()}");
+                return LogAndReturnError($"Erro ao processar o evento: {data}", ex);
             }
         }
 
@@ -58,7 +68,7 @@ namespace EventMonitor.Controllers
             }
             catch (Exception ex)
             {
-                return Problem(ex.ToString());
+                return LogAndReturnError("Houve um erro na requisição das estatísticas de eventos.", ex);
             }
         }
 
@@ -88,11 +98,7 @@ namespace EventMonitor.Controllers
             }
             catch (Exception ex)
             {
-                var message = $"Houve um erro na inicialização do agregador automático: {ex.Message}";
-
-                _logger.LogError(message);
-
-                return Problem(message);
+                return LogAndReturnError("Houve um erro na inicialização do agregador automático.", ex);
             }
         }
 
@@ -120,14 +126,17 @@ namespace EventMonitor.Controllers
                     return Conflict(message);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                var message = $"Houve um erro na interrupção do agregador automático: {e.Message}";
-
-                _logger.LogError(message);
-
-                return Problem(message);
+                return LogAndReturnError("Houve um erro na interrupção do agregador automático", ex);
             }
+        }
+
+        private IActionResult LogAndReturnError(string msg, Exception ex)
+        {
+            _logger.LogError(msg, ex);
+
+            return Problem($"{msg} {baseErrorMsg}");
         }
     }
 }

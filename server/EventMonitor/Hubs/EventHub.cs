@@ -17,13 +17,6 @@ namespace EventMonitor.Hubs
             _eventBusiness = eventBusiness;
         }
 
-        public async Task Start()
-        {
-            var stats = _eventBusiness.GetEventsStats();
-
-            await Clients.All.SendAsync(WebSocketActions.START, stats);
-        }
-
         public async void Update()
         {
             var stats = _eventBusiness.GetEventsStats();
