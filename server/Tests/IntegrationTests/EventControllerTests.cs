@@ -21,12 +21,10 @@ namespace IntegrationTests
             var content = _.SerializeObject(mockEvent);
 
             //act
-            await _.Client.PostAsync($"{_.AppUrl}/Event", content);
+            var response = await _.Client.PostAsync($"{_.AppUrl}/Event", content);
 
             //assert
-            var persistedEvent = _.Client.GetAsync($"{_.AppUrl}/Event?timestamp={mockEvent.Timestamp}&tag={mockEvent.Tag}&value={mockEvent.Value}").Result;
-
-            Assert.Equal(HttpStatusCode.OK, persistedEvent.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
     }
 }
