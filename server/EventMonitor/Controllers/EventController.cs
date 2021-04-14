@@ -64,7 +64,14 @@ namespace EventMonitor.Controllers
             {
                 var events = _eventBusiness.GetEventsStats();
 
-                return Ok(events);
+                if (events.Count == 0)
+                {
+                    return Ok("Não há eventos registrados no banco de dados.");
+                }
+                else
+                {
+                    return Ok(events);
+                }
             }
             catch (Exception ex)
             {
@@ -134,7 +141,7 @@ namespace EventMonitor.Controllers
 
         private IActionResult LogAndReturnError(string msg, Exception ex)
         {
-            _logger.LogError(msg, ex);
+            _logger.LogError(msg + ex);
 
             return Problem($"{msg} {baseErrorMsg}");
         }
