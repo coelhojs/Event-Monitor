@@ -29,7 +29,7 @@ services:
     env_file:
     - .env
     build:
-      context: .
-      dockerfile: "./simulator/Dockerfile"
+      context: "./simulator"
+      dockerfile: "./Dockerfile"
     container_name: event-simulator
     restart: unless-stopped

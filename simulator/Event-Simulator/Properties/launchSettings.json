@@ -3,7 +3,9 @@
     "Event_Simulator": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "API_URL": "http://0.0.0.0:5000",
+        "DOTNET_ENVIRONMENT": "Development",
+        "SIMULATOR_INTERVAL":"1000"
       }
     }
   }

@@ -5,13 +5,12 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://0.0.0.0:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CONNECTION_STRING": "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres;",
+        "CONNECTION_STRING": "Host=192.168.2.93;Port=5432;Database=postgres;Username=postgres;Password=postgres;",
         "TZ": "America/Sao_Paulo",
-        //"UpdateIntervalMs": "1000"
-        "UpdateIntervalMs": "6000000"
+        "UpdateIntervalMs": "1000"
       }
     }
   }
