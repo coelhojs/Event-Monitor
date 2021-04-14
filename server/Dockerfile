@@ -10,4 +10,4 @@ RUN dotnet publish -c Release -o out
 
 WORKDIR /src/out
 
-ENTRYPOINT ["dotnet", "Event-Monitor.dll"]
+ENTRYPOINT ["dotnet", "EventMonitor.dll"]
