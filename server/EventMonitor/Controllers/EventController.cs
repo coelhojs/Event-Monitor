@@ -4,6 +4,7 @@ using EventMonitor.Services;
 using EventMonitor.ViewObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -16,14 +17,17 @@ namespace EventMonitor.Controllers
     {
         private readonly IEventBusiness _eventBusiness;
         private readonly IHubContext<EventHub> _eventHub;
+        private readonly ILogger<EventController> _logger;
 
         private readonly EventsAggregator _eventsAggregator;
         private readonly EventsProcessor _eventsProcessor;
 
-        public EventController(IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
+        public EventController(ILogger<EventController> logger, IEventBusiness eventBusiness, IHubContext<EventHub> eventHub)
         {
             _eventBusiness = eventBusiness;
             _eventHub = eventHub;
+            _logger = logger;
+
             _eventsAggregator = new EventsAggregator(_eventBusiness, _eventHub);
             _eventsProcessor = new EventsProcessor(_eventBusiness);
         }
@@ -33,30 +37,19 @@ namespace EventMonitor.Controllers
         {
             try
             {
+                var start = DateTime.Now;
+
                 Task.Run(() => _eventsProcessor.Enqueue(data));
+
+                _logger.LogDebug($"Tempo gasto: {(DateTime.Now - start).TotalSeconds.ToString()}");
+
                 return Accepted();
             }
             catch (Exception ex)
             {
-                return Problem(ex.ToString());
-
+                return Problem($"Erro ao processar um novo evento:{ex.ToString()}");
             }
         }
-
-        //[HttpGet]
-        //public IActionResult GetEvents([FromQuery] RawEventVO filter)
-        //{
-        //    try
-        //    {
-        //        var events = _eventBusiness.GetEvents(filter);
-
-        //        return Ok(events);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Problem(ex.ToString());
-        //    }
-        //}
 
         [HttpGet("GetStats")]
         public IActionResult GetStats()
@@ -84,11 +77,15 @@ namespace EventMonitor.Controllers
 
                     var message = "Agregador automático iniciado.";
 
+                    _logger.LogInformation(message);
+
                     return Ok(message);
                 }
                 else
                 {
                     var message = "O agregador automático já está ativo.";
+
+                    _logger.LogInformation(message);
 
                     return Conflict(message);
                 }
@@ -96,6 +93,8 @@ namespace EventMonitor.Controllers
             catch (Exception ex)
             {
                 var message = $"Houve um erro na inicialização do agregador automático: {ex.Message}";
+
+                _logger.LogError(message);
 
                 return Problem(message);
             }
@@ -112,11 +111,15 @@ namespace EventMonitor.Controllers
 
                     string message = "O agregador automático foi interrompido com sucesso.";
 
+                    _logger.LogInformation(message);
+
                     return Ok(message);
                 }
                 else
                 {
                     var message = "O agregador automático já está parado.";
+
+                    _logger.LogInformation(message);
 
                     return Conflict(message);
                 }
@@ -124,6 +127,8 @@ namespace EventMonitor.Controllers
             catch (Exception e)
             {
                 var message = $"Houve um erro na interrupção do agregador automático: {e.Message}";
+
+                _logger.LogError(message);
 
                 return Problem(message);
             }
