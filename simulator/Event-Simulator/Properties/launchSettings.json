@@ -3,7 +3,7 @@
     "Event_Simulator": {
       "commandName": "Project",
       "environmentVariables": {
-        "API_URL": "http://0.0.0.0:5000",
+        "API_URL": "http://localhost:5000",
         "DOTNET_ENVIRONMENT": "Development",
         "SIMULATOR_INTERVAL":"1000"
       }
