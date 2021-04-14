@@ -1,6 +1,7 @@
 ﻿using EventMonitor.DAO;
 using EventMonitor.Interfaces;
 using EventMonitor.ViewObjects;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,85 +11,61 @@ namespace EventMonitor.Business
 {
     public class EventBusiness : IEventBusiness
     {
-        private EventDAO _eventDAO;
-        private Dictionary<string, string> _status;
+        private readonly ILogger<EventBusiness> _logger;
 
-        public EventBusiness(EventDAO eventDAO = null)
-        {
-            _eventDAO = eventDAO ?? new EventDAO();
-            _status = new Dictionary<string, string>();
-        }
+        private readonly EventDAO _eventDAO;
 
-        public List<EventVO> GetEvents(RawEventVO filter = null)
+        public EventBusiness(ILogger<EventBusiness> logger)
         {
-            return _eventDAO.Get(filter);
+            _logger = logger;
+
+            _eventDAO = new EventDAO();
         }
 
         public List<EventStatsVO> GetEventsStats()
         {
-            var events = GetEvents();
+            try
+            {
+                var stats = _eventDAO.GetStats();
 
-            var stats = AggregateEvents(events);
+                var summarizedStats = stats.GroupBy(stat => stat.Region)
+                    .Select(group => new EventStatsVO
+                    {
+                        Counter = group.Sum(item => item.Counter),
+                        Region = group.Key
+                    });
 
-            return stats;
-        }
+                stats.AddRange(summarizedStats);
 
-        private List<EventStatsVO> AggregateEvents(List<EventVO> events)
-        {
-            var stats = events.GroupBy(ev => new { ev.Region, ev.Sensor })
-                        .Select(group => new EventStatsVO
-                        {
-                            Counter = group.Count(),
-                            Sensor = group.Key.Sensor,
-                            Region = group.Key.Region,
-                            Status = _status.GetValueOrDefault($"{group.Key.Region}.{group.Key.Sensor}")
-                        })
-                        .OrderBy(x => x.Region)
-                        .ToList();
-
-            var summarizedStats = stats.GroupBy(stat => stat.Region)
-                .Select(group => new EventStatsVO
-                {
-                    Counter = group.Sum(item => item.Counter),
-                    Region = group.Key
-                });
-
-            stats.AddRange(summarizedStats);
-
-            return stats
-                .OrderBy(item => item.Sensor)
-                .OrderBy(item => item.Region)
-                .ToList();
+                return stats
+                    .OrderBy(item => item.Region)
+                    .ThenBy(item => item.Sensor)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         public async Task ProcessEvent(RawEventVO newEvent)
         {
             try
             {
+                _logger.LogInformation($"Processando novo evento: {newEvent.Tag}");
+
                 var parsedEvent = ParseEvent(newEvent);
 
-                _eventDAO.Save(parsedEvent);
-
-                if (string.IsNullOrEmpty(newEvent.Value))
-                {
-                    _status.Add(newEvent.Tag, "erro");
-                }
-                else
-                {
-
-                    _status.Add(newEvent.Tag, "processado");
-                }
+                await _eventDAO.Save(parsedEvent);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError($"Houve um erro no processamento de um novo evento: {ex.Message}", newEvent);
             }
         }
 
         public EventVO ParseEvent(RawEventVO newEvent)
         {
-            //TODO: Validar se a tag tem 3 (brasil.sudeste.sensor01), se não tiver rejeitar evento
-
             if (string.IsNullOrWhiteSpace(newEvent.Tag))
             {
                 throw new Exception("O evento recebido possui um ou mais valores inválidos.");

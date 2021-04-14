@@ -23,7 +23,7 @@ namespace EventMonitor.Services
             StartAggregator();
         }
 
-        public async void StartAggregator()
+        public void StartAggregator()
         {
             AggregatorCTS = new CancellationTokenSource();
 

@@ -9,34 +9,36 @@ namespace EventMonitor.DAO
 {
     public class EventDAO
     {
-        public List<EventVO> Get(RawEventVO filter)
+        public List<EventStatsVO> GetStats()
         {
-            List<Event> events = null;
-
             using (var context = new Context())
             {
-                if (filter != null)
+                var stats = context.Set<Event>()
+                    .GroupBy(ev => new { ev.Region, ev.Sensor })
+                        .Select(group => new EventStatsVO
+                        {
+                            Counter = group.Count(),
+                            Region = group.Key.Region,
+                            Sensor = group.Key.Sensor
+                        })
+                        .ToList();
+
+                foreach (var stat in stats)
                 {
-                    //TODO: Usar filtro
-                    events = context.Event.ToList();
-                }
-                else
-                {
-                    events = context.Event.ToList();
+                    stat.Status = GetLatestEvent(context, stat.Region, stat.Sensor);
                 }
 
-                return events.Select(ev => FromEntityToVO(ev)).ToList();
+                return stats;
             }
         }
 
-        public List<Event> GetByTag(string tag)
+        private string GetLatestEvent(Context context, string region, string sensor)
         {
-            using (var context = new Context())
-            {
-                var events = context.Event.Where(m => m.Region == tag).ToList();
+            var value = context.Set<Event>().OrderByDescending(ev => ev.Id)
+                       .FirstOrDefault(ev => ev.Region.Equals(region) && ev.Sensor.Equals(sensor)).Value;
 
-                return events;
-            }
+            return string.IsNullOrEmpty(value) ? "erro" : "processado";
+
         }
 
         public async Task Save(EventVO data)
@@ -45,9 +47,9 @@ namespace EventMonitor.DAO
             {
                 using (var context = new Context())
                 {
-                    var entity = FromVOToEntity(data);
+                    var entity = FromVOToEvent(data);
 
-                    context.Event.Add(entity);
+                    await context.Event.AddAsync(entity);
 
                     await context.SaveChangesAsync();
                 }
@@ -64,7 +66,7 @@ namespace EventMonitor.DAO
             }
         }
 
-        public EventVO FromEntityToVO(Event entity)
+        public EventVO FromEventToVO(Event entity)
         {
             return new EventVO
             {
@@ -75,7 +77,7 @@ namespace EventMonitor.DAO
             };
         }
 
-        public Event FromVOToEntity(EventVO vo, Event entity = null)
+        public Event FromVOToEvent(EventVO vo, Event entity = null)
         {
             return new Event
             {
