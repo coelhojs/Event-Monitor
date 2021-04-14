@@ -23,7 +23,7 @@ namespace EventMonitor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IEventBusiness, EventBusiness>();
+            services.AddSingleton<IEventBusiness, EventBusiness>();
 
             services.AddCors();
 
@@ -76,6 +76,7 @@ namespace EventMonitor
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
                 endpoints.MapHub<EventHub>("/hub/events");
             });
 

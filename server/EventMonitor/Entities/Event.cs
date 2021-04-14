@@ -8,6 +8,10 @@ namespace EventMonitor.Entities
     public class Event
     {
         [Required]
+        [Column(name: "ID")]
+        public long Id { get; set; }
+
+        [Required]
         [Column(name: "REGION")]
         public string Region { get; set; }
 
