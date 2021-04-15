@@ -23,7 +23,7 @@ namespace EventMonitor.Hubs
             _logger = logger;
         }
 
-        public async void Update()
+        public void Update()
         {
             try
             {
@@ -35,7 +35,7 @@ namespace EventMonitor.Hubs
             }
         }
 
-        public async void UpdateHistogram()
+        public async Task UpdateHistogram()
         {
             try
             {
@@ -49,7 +49,7 @@ namespace EventMonitor.Hubs
             }
         }
 
-        public async void UpdateChart()
+        public async Task UpdateChart()
         {
             try
             {
@@ -63,7 +63,7 @@ namespace EventMonitor.Hubs
             }
         }
 
-        public async void UpdateStats()
+        public async Task UpdateStats()
         {
             try
             {

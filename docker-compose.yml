@@ -1,9 +1,23 @@
 version: '3'
 services:
+  frontend:
+    image: frontend
+    env_file: 
+      - .env
+    build:
+      context: "./client"
+      dockerfile: "./Dockerfile"
+    container_name: frontend
+    depends_on: 
+      - event-monitor
+    ports:
+      - 80:80
+    restart: unless-stopped
+
   event-monitor:
     image: event-monitor
     env_file:
-    - .env
+      - .env
     environment: 
       ASPNETCORE_URLS: http://+:5000
     build:
@@ -25,7 +39,7 @@ services:
     depends_on:
       - event-monitor
     env_file:
-    - .env
+      - .env
     environment: 
       ASPNETCORE_URLS: http://+:5001
     image: event-simulator

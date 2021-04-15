@@ -4,9 +4,9 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore
+RUN dotnet restore EventMonitor
 
-RUN dotnet publish -c Release -o out
+RUN dotnet publish EventMonitor -c Release -o out
 
 WORKDIR /src/out
 
