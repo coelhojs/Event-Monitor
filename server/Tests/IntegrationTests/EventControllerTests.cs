@@ -1,4 +1,6 @@
 using System.Net;
+using UnitTests;
+using UnitTests._MockObjects;
 using Xunit;
 
 namespace IntegrationTests
@@ -6,6 +8,7 @@ namespace IntegrationTests
     public class EventControllerTests : IClassFixture<_TestFixtures>
     {
         private readonly _TestFixtures _;
+        private readonly RawEventMock _rawEventMock;
 
         public EventControllerTests(_TestFixtures testFixtures)
         {
@@ -16,7 +19,7 @@ namespace IntegrationTests
         public async void NewEvent()
         {
             //arrange
-            var mockEvent = _MockObjects.MockEvent();
+            var mockEvent = _rawEventMock.MockRawEvent();
 
             var content = _.SerializeObject(mockEvent);
 

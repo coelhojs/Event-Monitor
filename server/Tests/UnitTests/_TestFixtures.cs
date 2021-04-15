@@ -10,13 +10,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 
-namespace IntegrationTests
+namespace UnitTests
 {
     public class _TestFixtures : IDisposable
     {
         private readonly TestServer _server;
 
-        public string AppUrl { get; } = "http://localhost:5000";
+        public string AppUrl { get; }
         public HttpClient Client { get; }
 
         public _TestFixtures()
@@ -54,6 +54,7 @@ namespace IntegrationTests
 
             _server = new TestServer(builder);
 
+            AppUrl = Environment.GetEnvironmentVariable("API_URL");
             Client = _server.CreateClient();
             Client.BaseAddress = new Uri(AppUrl);
         }
