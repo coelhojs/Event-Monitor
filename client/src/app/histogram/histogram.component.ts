@@ -9,7 +9,7 @@ import { HistogramData } from 'src/models/HistogramData';
     styleUrls: ['./histogram.component.scss'],
 })
 
-export class ChartComponent implements OnInit {
+export class HistogramComponent implements OnInit {
     @Input() histogramData: HistogramData[];
 
     ngOnInit() {

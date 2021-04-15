@@ -32,7 +32,7 @@ export class AppComponent {
 
   initWebSocket() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('http://0477f5f4a724e6.localhost.run/hub/events')
+      .withUrl('http://9708dc16aca00f.localhost.run/hub/events')
       .build();
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
@@ -50,7 +50,7 @@ export class AppComponent {
   }
 
   getStats(): any {
-    this.http.get('http://0477f5f4a724e6.localhost.run/Event/GetStats')
+    this.http.get('http://9708dc16aca00f.localhost.run/Event/GetStats')
       .subscribe(res => {
         return res;
       }, err => {
@@ -62,7 +62,7 @@ export class AppComponent {
   }
 
   startAggregator(): any {
-    this.http.get('http://0477f5f4a724e6.localhost.run/Event/StartAggregator')
+    this.http.get('http://9708dc16aca00f.localhost.run/Event/StartAggregator')
       .subscribe(res => { }, err => {
         if (err.status != 409) {
           console.error(err);

@@ -17,13 +17,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
+import { HistogramComponent } from './histogram/histogram.component';
 import { DashboardComponent } from './table/table.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ChartComponent,
-    DashboardComponent
+    DashboardComponent,
+    HistogramComponent
   ],
   imports: [
     AppRoutingModule,
