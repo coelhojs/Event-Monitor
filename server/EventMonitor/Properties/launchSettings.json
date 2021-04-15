@@ -5,8 +5,9 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:5000",
+      "applicationUrl": "http://0.0.0.0:5000",
       "environmentVariables": {
+        "API_URL": "http://localhost:5000",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "CONNECTION_STRING": "Host=localhost;Port=5432;Database=postgres;Username=postgres;Password=postgres;",
         "TZ": "America/Sao_Paulo",
