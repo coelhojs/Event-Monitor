@@ -9,6 +9,7 @@ namespace EventMonitor.Interfaces
         List<EventStatsVO> GetEventsStats();
         EventVO ParseEvent(RawEventVO newEvent);
         Task ProcessEvent(RawEventVO newEvent);
+        List<ChartDataVO> GetChartData();
         List<HistogramDataVO> GetHistogramData(List<EventStatsVO> stats);
     }
 }

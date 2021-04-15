@@ -78,6 +78,28 @@ namespace EventMonitor.Controllers
             }
         }
 
+        [HttpGet("GetChartData")]
+        public IActionResult GetChartData()
+        {
+            try
+            {
+                var events = _eventBusiness.GetChartData();
+
+                if (events.Count == 0)
+                {
+                    return Ok("Não há eventos registrados no banco de dados.");
+                }
+                else
+                {
+                    return Ok(events);
+                }
+            }
+            catch (Exception ex)
+            {
+                return LogAndReturnError("Houve um erro na requisição dos dados do gráfico.", ex);
+            }
+        }
+
         [HttpGet("StartAggregator")]
         public IActionResult StartAggregator()
         {

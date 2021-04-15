@@ -1,6 +1,7 @@
 using EventMonitor.Entities;
 using EventMonitor.Interfaces;
 using EventMonitor.ViewObjects;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,13 @@ namespace EventMonitor.DAO
 {
     public class EventDAO : IEventDAO
     {
+        private readonly ILogger<EventDAO> _logger;
+
+        public EventDAO(ILogger<EventDAO> logger)
+        {
+            _logger = logger;
+        }
+
         public List<EventStatsVO> GetStats()
         {
             using (var context = new Context())
@@ -31,6 +39,22 @@ namespace EventMonitor.DAO
                 }
 
                 return stats;
+            }
+        }
+
+        public List<EventVO> GetTagsHistory(int timeWindow)
+        {
+            _logger.LogDebug("Definindo a data hora minima para filtrar os dados historicos.");
+
+            var startingTime = DateTime.Now.AddHours(-timeWindow);
+
+            using (var context = new Context())
+            {
+                var history = context.Set<Event>()
+                    .Where(ev => string.IsNullOrEmpty(ev.Value) == false && ev.Timestamp > startingTime)
+                    .ToList();
+
+                return history.Select(ev => FromEventToVO(ev)).ToList();
             }
         }
 
@@ -66,7 +90,7 @@ namespace EventMonitor.DAO
             {
                 Region = entity.Region,
                 Sensor = entity.Sensor,
-                Timestamp = new DateTimeOffset(entity.Timestamp).ToUnixTimeSeconds(),
+                Timestamp = ((DateTimeOffset)entity.Timestamp).ToUnixTimeSeconds(),
                 Value = entity.Value
             };
         }

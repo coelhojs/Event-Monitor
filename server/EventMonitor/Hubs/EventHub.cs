@@ -19,10 +19,13 @@ namespace EventMonitor.Hubs
 
         public async void Update()
         {
-            var stats = _eventBusiness.GetEventsStats();
-            var histogramData = _eventBusiness.GetHistogramData(stats);
+            var chartData = _eventBusiness.GetChartData();
+            await Clients.All.SendAsync(WebSocketActions.UPDATECHART, chartData);
 
+            var stats = _eventBusiness.GetEventsStats();
             await Clients.All.SendAsync(WebSocketActions.UPDATE, stats);
+
+            var histogramData = _eventBusiness.GetHistogramData(stats);
             await Clients.All.SendAsync(WebSocketActions.UPDATEHISTOGRAM, histogramData);
         }
 
@@ -49,6 +52,7 @@ namespace EventMonitor.Hubs
     public struct WebSocketActions
     {
         public static readonly string UPDATE = "updateEvents";
+        public static readonly string UPDATECHART = "updateChart";
         public static readonly string UPDATEHISTOGRAM = "updateHistogram";
         public static readonly string START = "startMonitor";
         public static readonly string STOP = "stopMonitor";

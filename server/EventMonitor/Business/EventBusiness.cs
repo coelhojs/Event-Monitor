@@ -1,5 +1,4 @@
-﻿using EventMonitor.DAO;
-using EventMonitor.Interfaces;
+﻿using EventMonitor.Interfaces;
 using EventMonitor.ViewObjects;
 using Microsoft.Extensions.Logging;
 using System;
@@ -79,6 +78,29 @@ namespace EventMonitor.Business
                 Timestamp = newEvent.Timestamp,
                 Value = newEvent.Value
             };
+        }
+
+        public List<ChartDataVO> GetChartData()
+        {
+            _logger.LogDebug("Obtendo dados históricos das tags das últimas 12 horas.");
+
+            var tagsHistory = _eventDAO.GetTagsHistory(12);
+
+            var tags = tagsHistory.Select(ev => $"{ev.Region}.{ev.Sensor}").Distinct().ToList();
+
+            var chartDataList = new List<ChartDataVO>();
+
+            foreach (var tag in tags)
+            {
+                chartDataList.Add(new ChartDataVO
+                {
+                    Name = tag,
+                    Data = tagsHistory.Where(ev => tag.Contains(ev.Region) && tag.Contains(ev.Sensor))
+                    .Select(ev => $"{ev.Timestamp};{ev.Value}").ToList()
+                });
+            }
+
+            return chartDataList;
         }
 
         public List<HistogramDataVO> GetHistogramData(List<EventStatsVO> stats)

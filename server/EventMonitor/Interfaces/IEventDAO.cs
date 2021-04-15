@@ -10,6 +10,7 @@ namespace EventMonitor.Interfaces
         EventVO FromEventToVO(Event entity);
         Event FromVOToEvent(EventVO vo, Event entity = null);
         List<EventStatsVO> GetStats();
+        List<EventVO> GetTagsHistory(int timeWindow);
         Task Save(EventVO data);
     }
 }
