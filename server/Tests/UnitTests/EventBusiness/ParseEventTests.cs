@@ -18,6 +18,8 @@ namespace UnitTests
         }
 
         [Theory]
+        [Trait("Category", "unit")]
+        [Trait("Description", "Valida a leitura da tag de um novo evento.")]
         [InlineData(" ")]
         [InlineData("")]
         [InlineData("brasil-sudeste-sensor01")]

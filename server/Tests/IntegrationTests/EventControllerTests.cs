@@ -16,6 +16,8 @@ namespace IntegrationTests
         }
 
         [Fact]
+        [Trait("Category", "integration")]
+        [Trait("Description", "Valida o processo de envio de novos eventos para a aplicação.")]
         public async void NewEvent()
         {
             //arrange

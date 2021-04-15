@@ -27,6 +27,8 @@ namespace UnitTests
         }
 
         [Fact]
+        [Trait("Category", "integration")]
+        [Trait("Description", "Valida a busca das estatísticas dos eventos na base de dados.")]
         public void GetEventsStats()
         {
             List<EventStatsVO> stats;

@@ -22,6 +22,8 @@ namespace UnitTests
         }
 
         [Fact]
+        [Trait("Category", "unit")]
+        [Trait("Description", "Valida o processo de criação dos totalizadores dos eventos e a ordenação da lista.")]
         //Padrão de nomenclatura: MétodoTestado_Cenário_RetornoEsperado
         public void GetEventsStats_ExistingData_ReturnsOrderedListWithSummarizedData()
         {
