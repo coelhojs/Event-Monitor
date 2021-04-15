@@ -1,4 +1,5 @@
 using EventMonitor.Entities;
+using EventMonitor.Interfaces;
 using EventMonitor.ViewObjects;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace EventMonitor.DAO
 {
-    public class EventDAO
+    public class EventDAO : IEventDAO
     {
         public List<EventStatsVO> GetStats()
         {

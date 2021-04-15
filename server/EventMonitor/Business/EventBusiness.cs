@@ -13,13 +13,13 @@ namespace EventMonitor.Business
     {
         private readonly ILogger<EventBusiness> _logger;
 
-        private readonly EventDAO _eventDAO;
+        private readonly IEventDAO _eventDAO;
 
-        public EventBusiness(ILogger<EventBusiness> logger)
+        public EventBusiness(ILogger<EventBusiness> logger, IEventDAO eventDAO)
         {
             _logger = logger;
 
-            _eventDAO = new EventDAO();
+            _eventDAO = eventDAO;
         }
 
         public List<EventStatsVO> GetEventsStats()

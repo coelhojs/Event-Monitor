@@ -1,7 +1,7 @@
 ﻿using EventMonitor.ViewObjects;
 using System.Threading.Tasks;
 
-namespace EventMonitor.Services
+namespace EventMonitor.Interfaces
 {
     public interface IEventsProcessor
     {
