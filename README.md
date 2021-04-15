@@ -15,6 +15,15 @@ Microsserviços que compõem a solução:
 ### Instruções de execução:
 - O sistema pode ser inicializado por completo a partir do comando `docker-compose up`, que deve ser executado no diretório raiz da solução, ou os componentes da solução podem ser inicializados individualmente com o comando `docker-compose up <nome-do-serviço>`. Para iniciar a solução sem o simulador, por exemplo, pode ser usado o comando `docker-compose up frontend`.
 
+### Tecnologias utilizadas
+- .NET Core 3.1
+- Entity Framework Core
+- xUnit + Moq
+- Postgres 9.6
+- Angular 11 com Angular Material
+- Docker e Docker Compose
+- Gitlab CI
+
 ### Pontos de melhoria e possíveis inovações:
 - Para evitar um uso tão intenso do banco de dados, poderiam ser utilizados objetos, como listas e dicionários para agregar os dados à medida em que eles são recebidos, sem a necessidade de consultar o banco de dados. Desse modo, a consulta no banco somente seria feita em caso de falhas e interrupções no funcionamento do sistema.
 - Visando garantir mais alguns atributos de qualidade, como escalabilidade e tolerância a falhas, seria importante manter réplicas do serviço e o uso de um orquestrador de containers, como o Kubernetes.
