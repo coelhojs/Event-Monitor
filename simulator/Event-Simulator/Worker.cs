@@ -22,21 +22,28 @@ namespace Event_Simulator
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                foreach (var region in _mockObjects.regions)
+                while (!stoppingToken.IsCancellationRequested)
                 {
-                    foreach (var sensor in _mockObjects.sensors)
+                    foreach (var region in _mockObjects.regions)
                     {
-                        var content = _mockObjects.GetEvent(region, sensor);
+                        foreach (var sensor in _mockObjects.sensors)
+                        {
+                            var content = _mockObjects.GetEvent(region, sensor);
 
-                        _simulator.Client.PostAsync($"{_simulator.AppUrl}/Event", content);
+                            _simulator.Client.PostAsync($"{_simulator.AppUrl}/Event", content);
+                        }
                     }
+
+                    _logger.LogInformation("Simulando eventos para todos os sensores: {time}", DateTimeOffset.Now);
+
+                    await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("SIMULATOR_INTERVAL")), stoppingToken);
                 }
-
-                _logger.LogInformation("Simulando eventos para todos os sensores: {time}", DateTimeOffset.Now);
-
-                await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("SIMULATOR_INTERVAL")), stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Houve um erro no simulador de eventos: " + '\n' + ex);
             }
         }
     }

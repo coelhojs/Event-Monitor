@@ -24,7 +24,7 @@ namespace EventMonitor.Services
 
         public void Enqueue(RawEventVO newEvent)
         {
-           _concurrentQueue.Enqueue(newEvent);
+            _concurrentQueue.Enqueue(newEvent);
         }
 
         public async Task Process()
@@ -41,7 +41,7 @@ namespace EventMonitor.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("Houve um erro no processamento da fila de eventos a serem registrados.", ex);
+                _logger.LogError("Houve um erro no processamento da fila de eventos a serem registrados." + '\n' + ex);
             }
         }
     }

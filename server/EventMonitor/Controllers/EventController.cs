@@ -47,7 +47,7 @@ namespace EventMonitor.Controllers
             {
                 var message = $"O evento possui dados inválidos: {ex.Message}";
 
-                _logger.LogError(message, ex);
+                _logger.LogError(message);
 
                 return Problem(message);
             }
@@ -141,7 +141,7 @@ namespace EventMonitor.Controllers
 
         private IActionResult LogAndReturnError(string msg, Exception ex)
         {
-            _logger.LogError(msg + ex);
+            _logger.LogError(msg + '\n' + ex);
 
             return Problem($"{msg} {baseErrorMsg}");
         }

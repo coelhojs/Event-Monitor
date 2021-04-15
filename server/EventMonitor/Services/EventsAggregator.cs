@@ -75,7 +75,7 @@ namespace EventMonitor.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("Ocorreu um erro no agregador de estatísticas. Será feita uma tentativa de reinicialização daqui 10 segundos.", ex);
+                _logger.LogError("Ocorreu um erro no agregador de estatísticas. Será feita uma tentativa de reinicialização daqui 10 segundos." + '\n' + ex);
 
                 await Task.Delay(10000);
 
