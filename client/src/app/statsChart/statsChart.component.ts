@@ -2,7 +2,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ChartData } from 'src/models/ChartData';
 import * as Highcharts from "highcharts";
-import { Options } from "highcharts";
 
 @Component({
     selector: 'statsChart',
@@ -10,72 +9,55 @@ import { Options } from "highcharts";
     styleUrls: ['./statsChart.component.scss'],
 })
 
-export class ChartComponent {
+export class ChartComponent onInit{
     @Input() chartData: ChartData[];
-    @Input() Highcharts: typeof Highcharts = Highcharts;
-    @Input() update;
-    @Input() updateHistogram;
 
-    chartOptions: Options = {
-        chart: {
-            renderTo: 'chart',
-            marginLeft: 100,
-            //  plotAreaWidth: 50,
-            //   plotAreaHeight: 450,
-        },
-
-        title: {
-            text: 'Evolução dos valores das tags nas últimas 24 horas'
-        },
-
-        yAxis: {
+    ngOnInit() {
+        Highcharts.chart('chart', {
+            chart: {
+                type: 'spline'
+            },
             title: {
+                text: 'Evolução dos valores das tags nas últimas 24 horas'
+            },
+            subtitle: {
                 text: ''
-            }
-        },
-
-        xAxis: {
-            type: 'category',
-            min: 0,
-            labels: {
-                // animate: false
-            }
-        },
-
-        legend: {
-            enabled: false
-        },
-
-        series: [{
-            type: 'spline',
-            zoneAxis: 'x',
-            zones: [{
-                value: 2,
-                color: 'red'
-            }],
-            dataLabels: {
-                enabled: true,
-                format: '{y:,.2f}'
             },
-            dataSorting: {
-                enabled: true,
-                sortKey: 'y'
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    minute: '%H:%M'
+                },
+                title: {
+                    text: 'Hora'
+                }
             },
-            data: [["hello", 1], ["hello", 1], ["hello", 1], ["hello", 1],]
-        }]
+            yAxis: {
+                title: {
+                    text: 'Valor'
+                },
+                min: 0
+            },
+            tooltip: {
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: 'Valor: {point.y:.5f}'
+            },
 
+            plotOptions: {
+                series: {
+                    marker: {
+                        enabled: true
+                    }
+                }
+            },
+
+            colors: ['#7cb5ec', '#cccccc', '#90ed7d', '#f7a35c'],
+
+            series: this.chartData
+        });
     }
 
     ngOnChanges() {
-        this.handleUpdate();
-    }
-
-    handleUpdate() {
-        this.chartOptions.series[0] = {
-            type: 'spline',
-            data: this.chartData
-        }
-
-        this.updateHistogram = true;
+        this.ngOnInit();
     }
 }

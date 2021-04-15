@@ -4,21 +4,22 @@ import * as Highcharts from 'highcharts';
 import { HistogramData } from 'src/models/HistogramData';
 
 @Component({
-    selector: 'histogram',
-    templateUrl: './histogram.component.html',
-    styleUrls: ['./histogram.component.scss'],
+    selector: 'errorHistogram',
+    templateUrl: './errorHistogram.component.html',
+    styleUrls: ['./errorHistogram.component.scss'],
 })
 
-export class HistogramComponent implements OnInit {
+export class ErrorHistogramComponent implements OnInit {
     @Input() histogramData: HistogramData[];
+    @Input() status: string;
 
     ngOnInit() {
-        Highcharts.chart('histogram', {
+        Highcharts.chart('errorHistogram', {
             chart: {
                 type: 'column'
             },
             title: {
-                text: 'Ocorrências de erros por sensor'
+                text: `Ocorrências de erro por sensor`
             },
             xAxis: {
                 categories: ['Nordeste', 'Norte', 'Sudeste', 'Sul'],

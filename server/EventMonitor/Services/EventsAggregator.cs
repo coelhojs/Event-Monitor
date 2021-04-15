@@ -67,11 +67,12 @@ namespace EventMonitor.Services
                     var stats = _eventBusiness.GetEventsStats();
                     await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
 
-                    var histogramData = _eventBusiness.GetHistogramData(stats);
-                    await _eventHub.Clients.All.SendAsync("updateHistogram", histogramData, AggregatorCTS);
+                    var errorHistogramData = _eventBusiness.GetHistogramData(stats, "erro");
+                    await _eventHub.Clients.All.SendAsync("updateErrorHistogram", errorHistogramData, AggregatorCTS);
 
-                    var chartData = _eventBusiness.GetChartData();
-                    await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
+                    var processedHistogramData = _eventBusiness.GetHistogramData(stats, "processado");
+                    await _eventHub.Clients.All
+                        .SendAsync("updateProcessedHistogram", processedHistogramData, AggregatorCTS);
 
                     await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UPDATE_INTERVALMS")));
                 }

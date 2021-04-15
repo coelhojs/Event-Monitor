@@ -4,8 +4,8 @@ import { EventStats } from 'src/models/EventStats';
 
 @Component({
   selector: 'statsTable',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+  templateUrl: './statsTable.component.html',
+  styleUrls: ['./statsTable.component.scss']
 })
 export class DashboardComponent {
   @Input() eventsStats: EventStats[];

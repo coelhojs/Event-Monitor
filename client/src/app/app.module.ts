@@ -14,23 +14,27 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HighchartsChartModule } from 'highcharts-angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ChartComponent } from './chart/chart.component';
-import { HistogramComponent } from './histogram/histogram.component';
-import { DashboardComponent } from './table/table.component';
+import { ErrorHistogramComponent } from './errorHistogram/errorHistogram.component';
+import { ProcessedHistogramComponent } from './processedHistogram/processedHistogram.component';
+// import { ChartComponent } from './statsChart/statsChart.component';
+import { DashboardComponent } from './statsTable/statsTable.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ChartComponent,
+    // ChartComponent,
     DashboardComponent,
-    HistogramComponent
+    ErrorHistogramComponent,
+    ProcessedHistogramComponent
   ],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
     BrowserModule,
+    HighchartsChartModule,
     HttpClientModule,
     LayoutModule,
     MatButtonModule,

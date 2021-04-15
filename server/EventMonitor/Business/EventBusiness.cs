@@ -35,6 +35,7 @@ namespace EventMonitor.Business
                 {
                     Counter = group.Sum(item => item.Counter),
                     Errors = group.Sum(item => item.Errors),
+                    Processed = group.Sum(item => item.Processed),
                     Region = group.Key
                 });
 
@@ -103,7 +104,7 @@ namespace EventMonitor.Business
             return chartDataList;
         }
 
-        public List<HistogramDataVO> GetHistogramData(List<EventStatsVO> stats)
+        public List<HistogramDataVO> GetHistogramData(List<EventStatsVO> stats, string status)
         {
             var regions = new string[] { "brasil.nordeste", "brasil.norte", "brasil.sudeste", "brasil.sul" };
             var histogramData = new List<HistogramDataVO>();
@@ -117,10 +118,25 @@ namespace EventMonitor.Business
 
             foreach (var item in sensors)
             {
-                var north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Errors;
-                var northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Errors;
-                var southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Errors;
-                var south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Errors;
+                long? north;
+                long? northeast;
+                long? south;
+                long? southeast;
+
+                if (status == "processado")
+                {
+                    north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Processed;
+                    northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Processed;
+                    southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Processed;
+                    south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Processed;
+                }
+                else
+                {
+                    north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Errors;
+                    northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Errors;
+                    southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Errors;
+                    south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Errors;
+                }
 
                 histogramData.Add(new HistogramDataVO
                 {

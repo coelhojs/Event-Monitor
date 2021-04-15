@@ -1,3 +1,4 @@
+import { environment } from './../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
@@ -15,8 +16,9 @@ export class AppComponent {
   connection: signalR.HubConnection;
   dataSource: MatTableDataSource<EventStats>;
   eventsStats: EventStats[];
-  chartData: ChartData[];
-  histogramData: HistogramData[];
+  // chartData: ChartData[];
+  histogramErrorData: HistogramData[];
+  histogramProcessedData: HistogramData[];
   title = 'event-monitor';
 
   constructor(private http: HttpClient) { }
@@ -27,12 +29,12 @@ export class AppComponent {
       .then(() => {
         this.connection.invoke('Update');
       })
-    this.startAggregator();
+    //this.startAggregator();
   }
 
   initWebSocket() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('http://9708dc16aca00f.localhost.run/hub/events')
+      .withUrl(environment.apiUrl + "/hub/events")
       .build();
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
@@ -40,19 +42,18 @@ export class AppComponent {
       this.dataSource = new MatTableDataSource(this.eventsStats);
     });
 
-    this.connection.on('updateChart', (chartData: ChartData[]) => {
-      this.chartData = chartData;
+    this.connection.on('updateProcessedHistogram', (histogramData: HistogramData[]) => {
+      this.histogramProcessedData = histogramData;
     });
 
-    this.connection.on('updateHistogram', (histogramData: HistogramData[]) => {
-      this.histogramData = histogramData;
+    this.connection.on('updateErrorHistogram', (histogramData: HistogramData[]) => {
+      this.histogramErrorData = histogramData;
     });
   }
 
   getStats(): any {
-    this.http.get('http://9708dc16aca00f.localhost.run/Event/GetStats')
+    this.http.get(environment.apiUrl + "/Event/GetStats")
       .subscribe(res => {
-        return res;
       }, err => {
         if (err.status != 409) {
           console.error(err);
@@ -61,8 +62,28 @@ export class AppComponent {
       });
   }
 
+  processChartData(chartData): ChartData[] {
+    let data: ChartData[] = []
+    let item: ChartData = null;
+
+    chartData.map(list => {
+
+      item.name = list.name;
+
+      list.map(dataItem => {
+        let rawData = dataItem.data.Split(';');
+
+        item.data = [rawData[0], rawData[1]];
+
+        data.push(item);
+      });
+    });
+
+    return data;
+  }
+
   startAggregator(): any {
-    this.http.get('http://9708dc16aca00f.localhost.run/Event/StartAggregator')
+    this.http.get(environment.apiUrl + "/Event/StartAggregator")
       .subscribe(res => { }, err => {
         if (err.status != 409) {
           console.error(err);
@@ -70,3 +91,4 @@ export class AppComponent {
       });
   }
 }
+

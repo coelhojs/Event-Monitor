@@ -34,7 +34,7 @@ namespace EventMonitor.DAO
 
                 foreach (var stat in stats)
                 {
-                    stat.Errors = CountEventsErrors(context, stat.Region, stat.Sensor);
+                    (stat.Errors, stat.Processed) = CountEventsStatuses(context, stat.Region, stat.Sensor);
                     stat.Status = GetLatestEventStatus(context, stat.Region, stat.Sensor);
                 }
 
@@ -58,9 +58,12 @@ namespace EventMonitor.DAO
             }
         }
 
-        private long CountEventsErrors(Context context, string region, string sensor)
+        private (long, long) CountEventsStatuses(Context context, string region, string sensor)
         {
-            return context.Set<Event>().Count(item => item.Region == region && item.Sensor == sensor && string.IsNullOrEmpty(item.Value));
+            var errors = context.Set<Event>().Count(item => item.Region == region && item.Sensor == sensor && string.IsNullOrEmpty(item.Value));
+            var processed = context.Set<Event>().Count(item => item.Region == region && item.Sensor == sensor && !string.IsNullOrEmpty(item.Value));
+
+            return (errors, processed);
         }
 
         private string GetLatestEventStatus(Context context, string region, string sensor)
