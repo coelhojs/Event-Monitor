@@ -70,7 +70,7 @@ namespace EventMonitor.Services
                     await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
                     await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
 
-                    await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UpdateIntervalMs")));
+                    await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UPDATE_INTERVALMS")));
                 }
             }
             catch (Exception ex)

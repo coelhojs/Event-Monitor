@@ -5,7 +5,7 @@
       "environmentVariables": {
         "API_URL": "http://localhost:5000",
         "DOTNET_ENVIRONMENT": "Development",
-        "SIMULATOR_INTERVAL":"1000"
+        "SIMULATOR_INTERVALMS":"1000"
       }
     }
   }
