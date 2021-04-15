@@ -8,6 +8,7 @@ namespace EventMonitor.Entities
     public class Event
     {
         [Required]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(name: "id")]
         public long Id { get; set; }
 

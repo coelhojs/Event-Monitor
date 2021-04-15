@@ -18,6 +18,10 @@ namespace EventMonitor
         {
             builder.Entity<Event>()
                 .HasKey(u => new { u.Timestamp, u.Region, u.Sensor, u.Value });
+
+            builder.Entity<Event>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }
