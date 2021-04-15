@@ -25,8 +25,7 @@ namespace EventMonitor
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IEventDAO, EventDAO>();
-
+            services.AddSingleton<IEventDAO, EventDAO>();
             services.AddSingleton<IEventBusiness, EventBusiness>();
             services.AddSingleton<IEventsAggregator, EventsAggregator>();
             services.AddSingleton<IEventsProcessor, EventsProcessor>();
