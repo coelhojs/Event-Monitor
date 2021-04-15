@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS "EVENT" (
-    "ID" DEFAULT NOT NULL DEFAULT nextval('table_name_id_seq')
+    id serial,
     "REGION" varchar NOT NULL,
     "SENSOR" varchar NOT NULL,
     "TIMESTAMP" timestamp(0) NOT NULL,
