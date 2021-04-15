@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "Event_Simulator": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "API_URL": "http://localhost:5000",
+        "DOTNET_ENVIRONMENT": "Development",
+        "SIMULATOR_INTERVALMS":"1000"
+      }
+    }
+  }
+}

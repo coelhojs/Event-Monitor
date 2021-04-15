@@ -1,0 +1,59 @@
+version: '3'
+services:
+  frontend:
+    image: frontend
+    env_file: 
+      - .env
+    build:
+      context: "./client"
+      dockerfile: "./Dockerfile"
+    container_name: frontend
+    depends_on: 
+      - event-monitor
+    ports:
+      - 80:80
+    restart: unless-stopped
+
+  event-monitor:
+    image: event-monitor
+    env_file:
+      - .env
+    environment: 
+      ASPNETCORE_URLS: http://+:5000
+    build:
+      context: "./server"
+      dockerfile: "./Dockerfile"
+    container_name: event-monitor    
+    depends_on:
+      - postgres
+    ports:
+      - 5000:5000
+    restart: unless-stopped
+    volumes:  
+      - "./data:/app/data"
+  event-simulator:
+    build:
+      context: "./simulator"
+      dockerfile: "./Dockerfile"
+    container_name: event-simulator
+    depends_on:
+      - event-monitor
+    env_file:
+      - .env
+    environment: 
+      ASPNETCORE_URLS: http://+:5001
+    image: event-simulator
+    ports:
+      - 5001:5001
+    restart: unless-stopped
+  postgres:
+    container_name: postgres
+    env_file:
+      - .env
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    restart: unless-stopped
+    volumes:
+      - "./data:/var/lib/postgresql/data"
+      - "./db.sql:/docker-entrypoint-initdb.d/init.sql"
