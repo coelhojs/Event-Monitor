@@ -8,7 +8,7 @@ namespace EventMonitor.Entities
     public class Event
     {
         [Required]
-        [Column(name: "ID")]
+        [Column(name: "id")]
         public long Id { get; set; }
 
         [Required]
