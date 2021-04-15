@@ -5,12 +5,17 @@
 <mat-grid-list class="gridList" cols="2" rowHeight="3:2">
   <mat-grid-tile [colspan]="1" [rowspan]="1">
     <mat-card class="card">
-      <statsTable [dataSource]="dataSource" [eventsStats]="eventsStats"></statsTable>
+        <statsTable [dataSource]="dataSource" [eventsStats]="eventsStats"></statsTable>
     </mat-card>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="1" [rowspan]="1">
     <mat-card>
       <chart [chartData]="chartData"></chart>
+    </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="1" [rowspan]="1">
+    <mat-card>
+      <histogram [histogramData]="histogramData"></histogram>
     </mat-card>
   </mat-grid-tile>
 </mat-grid-list>

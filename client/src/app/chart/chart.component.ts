@@ -1,7 +1,7 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import * as Highcharts from 'highcharts';
-import { ChartData } from 'src/models/ChartData';
+import { HistogramData } from 'src/models/HistogramData';
 
 @Component({
     selector: 'chart',
@@ -10,46 +10,49 @@ import { ChartData } from 'src/models/ChartData';
 })
 
 export class ChartComponent implements OnInit {
-    @Input() chartData: ChartData[];
+    @Input() chartData: HistogramData[];
 
     ngOnInit() {
-        Highcharts.chart('container', {
+        Highcharts.chart('chart', {
             chart: {
-                type: 'column'
+                type: 'spline'
             },
             title: {
-                text: 'Ocorrências de eventos por sensor'
+                text: 'Evolução dos valores das tags nas últimas 24 horas'
             },
-            // subtitle: {
-            //     text: 'Source: WorldClimate.com'
-            // },
+            subtitle: {
+                text: ''
+            },
             xAxis: {
-                categories: ['Nordeste', 'Norte', 'Sudeste', 'Sul'],
-                crosshair: true
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    minute: '%H:%M'
+                },
+                title: {
+                    text: 'Hora'
+                }
             },
             yAxis: {
-                min: 0,
                 title: {
-                    text: 'Ocorrências'
-                }
+                    text: 'Valor'
+                },
+                min: 0
             },
             tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
+                headerFormat: '<b>{series.name}</b><br>',
+                pointFormat: 'Valor: {point.y:.5f}'
             },
+        
             plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                },
                 series: {
-                    animation: false
+                    marker: {
+                        enabled: true
+                    }
                 }
             },
+        
+            colors: ['#7cb5ec', '#cccccc', '#90ed7d', '#f7a35c'],        
+        
             series: this.chartData
         });
     }
