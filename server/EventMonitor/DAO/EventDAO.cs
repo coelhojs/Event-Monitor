@@ -26,11 +26,17 @@ namespace EventMonitor.DAO
 
                 foreach (var stat in stats)
                 {
+                    stat.Errors = CountEventsErrors(context, stat.Region, stat.Sensor);
                     stat.Status = GetLatestEventStatus(context, stat.Region, stat.Sensor);
                 }
 
                 return stats;
             }
+        }
+
+        private long CountEventsErrors(Context context, string region, string sensor)
+        {
+            return context.Set<Event>().Count(item => item.Region == region && item.Sensor == sensor && string.IsNullOrEmpty(item.Value));
         }
 
         private string GetLatestEventStatus(Context context, string region, string sensor)

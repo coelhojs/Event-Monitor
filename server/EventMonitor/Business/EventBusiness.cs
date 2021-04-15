@@ -11,9 +11,10 @@ namespace EventMonitor.Business
 {
     public class EventBusiness : IEventBusiness
     {
+        private readonly IEventDAO _eventDAO;
         private readonly ILogger<EventBusiness> _logger;
 
-        private readonly IEventDAO _eventDAO;
+        public List<EventStatsVO> EventsStats { get; private set; }
 
         public EventBusiness(ILogger<EventBusiness> logger, IEventDAO eventDAO)
         {
@@ -34,6 +35,7 @@ namespace EventMonitor.Business
                 .Select(group => new EventStatsVO
                 {
                     Counter = group.Sum(item => item.Counter),
+                    Errors = group.Sum(item => item.Errors),
                     Region = group.Key
                 });
 
@@ -79,10 +81,10 @@ namespace EventMonitor.Business
             };
         }
 
-        public List<ChartDataVO> GetChartData(List<EventStatsVO> stats)
+        public List<HistogramDataVO> GetHistogramData(List<EventStatsVO> stats)
         {
             var regions = new string[] { "brasil.nordeste", "brasil.norte", "brasil.sudeste", "brasil.sul" };
-            var chartData = new List<ChartDataVO>();
+            var histogramData = new List<HistogramDataVO>();
 
             var orderedStats = stats
                 .Where(item => item.Sensor != null)
@@ -93,12 +95,12 @@ namespace EventMonitor.Business
 
             foreach (var item in sensors)
             {
-                var north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Counter;
-                var northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Counter;
-                var southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Counter;
-                var south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Counter;
+                var north = orderedStats.FirstOrDefault(data => data.Region == regions[0] && data.Sensor == item)?.Errors;
+                var northeast = orderedStats.FirstOrDefault(data => data.Region == regions[1] && data.Sensor == item)?.Errors;
+                var southeast = orderedStats.FirstOrDefault(data => data.Region == regions[2] && data.Sensor == item)?.Errors;
+                var south = orderedStats.FirstOrDefault(data => data.Region == regions[3] && data.Sensor == item)?.Errors;
 
-                chartData.Add(new ChartDataVO
+                histogramData.Add(new HistogramDataVO
                 {
                     Name = item,
                     Data = new long[]{
@@ -110,7 +112,7 @@ namespace EventMonitor.Business
                 });
             }
 
-            return chartData;
+            return histogramData;
         }
     }
 }

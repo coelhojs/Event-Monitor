@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { ChartData } from 'src/models/ChartData';
 import { EventStats } from 'src/models/EventStats';
+import { HistogramData } from 'src/models/HistogramData';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ export class AppComponent {
   dataSource: MatTableDataSource<EventStats>;
   eventsStats: EventStats[];
   chartData: ChartData[];
+  histogramData: HistogramData[];
   title = 'event-monitor';
 
   constructor(private http: HttpClient) { }
@@ -30,12 +32,11 @@ export class AppComponent {
 
   initWebSocket() {
     this.connection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/hub/events')
+      .withUrl('http://0477f5f4a724e6.localhost.run/hub/events')
       .build();
 
     this.connection.on('updateEvents', (events: EventStats[]) => {
       this.eventsStats = events;
-      console.log(events);
       this.dataSource = new MatTableDataSource(this.eventsStats);
     });
 
@@ -43,17 +44,13 @@ export class AppComponent {
       this.chartData = chartData;
     });
 
-    this.connection.on('startMonitor', (events: EventStats[]) => {
-      //
-    });
-
-    this.connection.on('stopMonitor', () => {
-      //Notificar que parou
+    this.connection.on('updateHistogram', (histogramData: HistogramData[]) => {
+      this.histogramData = histogramData;
     });
   }
 
   getStats(): any {
-    this.http.get('http://localhost:5000/Event/GetStats')
+    this.http.get('http://0477f5f4a724e6.localhost.run/Event/GetStats')
       .subscribe(res => {
         return res;
       }, err => {
@@ -65,10 +62,8 @@ export class AppComponent {
   }
 
   startAggregator(): any {
-    this.http.get('http://localhost:5000/Event/StartAggregator')
-      .subscribe(res => {
-        console.log(res)
-      }, err => {
+    this.http.get('http://0477f5f4a724e6.localhost.run/Event/StartAggregator')
+      .subscribe(res => { }, err => {
         if (err.status != 409) {
           console.error(err);
         }

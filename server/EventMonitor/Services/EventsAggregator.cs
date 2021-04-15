@@ -65,10 +65,10 @@ namespace EventMonitor.Services
                     _logger.LogDebug("Enviando dados atualizados para a tabela e o gráfico de eventos.");
 
                     var stats = _eventBusiness.GetEventsStats();
-                    var chartData = _eventBusiness.GetChartData(stats);
+                    var histogramData = _eventBusiness.GetHistogramData(stats);
 
                     await _eventHub.Clients.All.SendAsync("updateEvents", stats, AggregatorCTS);
-                    await _eventHub.Clients.All.SendAsync("updateChart", chartData, AggregatorCTS);
+                    await _eventHub.Clients.All.SendAsync("updateHistogram", histogramData, AggregatorCTS);
 
                     await Task.Delay(int.Parse(Environment.GetEnvironmentVariable("UPDATE_INTERVALMS")));
                 }

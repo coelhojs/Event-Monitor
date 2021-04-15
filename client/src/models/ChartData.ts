@@ -1,5 +1,4 @@
 export interface ChartData {
-    type: undefined,
     name: string,
-    data: number[]
+    data: Array<Array<[Date, number]>>
 }
