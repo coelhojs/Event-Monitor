@@ -1,5 +1,4 @@
 ﻿using EventMonitor.Interfaces;
-using EventMonitor.Services;
 using EventMonitor.ViewObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -41,7 +40,7 @@ namespace EventMonitor.Controllers
 
                 _logger.LogDebug($"Tempo gasto: {(DateTime.Now - start).TotalSeconds}");
 
-                return Accepted();
+                return Accepted("Evento recebido para ser processado.", data);
             }
             catch (FormatException ex)
             {
